@@ -1,0 +1,262 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Designsystem Praxis Dr. med. Adel Aziz
+   Vertrag steht in DESIGN.md. Wer hier Farben ergänzt, ergänzt sie dort auch.
+   Zwei Familien: Nacht (Petrol-Anthrazit) und Leinen. Ein Akzent: Salbei.
+   Dazu zwei Zustandsfarben. Mehr nicht.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-linen: #f4f1ec;
+  --color-paper: #fcfaf7;
+
+  --color-night: #12262b;
+  --color-night-deep: #0b181c;
+  --color-night-soft: #1e3a40;
+
+  --color-sage: #7fa08c;
+  /* Aufgehellte Variante für kleinen Text auf --night-soft. Salbei selbst
+     erreicht dort nur 4.21:1 und fällt damit durch WCAG AA. Im Browser
+     nachgemessen: 4.80:1 auf --night-soft, 8.25:1 auf --night. */
+  --color-sage-bright: #a8c4b2;
+  --color-petrol: #2c6a6e;
+
+  --color-ink: #14201f;
+  --color-ink-soft: #55605e;
+  --color-rule: #dfd9d0;
+
+  --color-open: #2a6b45;
+  --color-alert: #a8321f;
+
+  --font-sans: var(--font-source), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+@layer base {
+  html {
+    /* 17px Basis statt 16px. Die Zielgruppe ist älter. */
+    font-size: 106.25%;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Sticky-Header darf Sprungziele nicht verdecken. */
+    scroll-padding-top: 5.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-linen);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  h3,
+  h4 {
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Sichtbarer Fokus auf jedem interaktiven Element. Nicht wegoptimieren.
+     Zwei Ringe, weil die Seite Leinen und Nachtgrund mischt: Petrol trägt auf
+     hell, der helle Innenring trägt auf dunkel. Einer ist immer sichtbar. */
+  :focus-visible {
+    outline: 3px solid var(--color-petrol);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--color-paper);
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background-color: var(--color-night);
+    color: #fff;
+  }
+
+  /* Tabellenziffern überall dort, wo Zahlen untereinander stehen. */
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+  }
+
+  .section {
+    padding-block: clamp(4.5rem, 9vw, 8.5rem);
+  }
+
+  .display {
+    font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 6.2vw, 4.75rem);
+    font-weight: 400;
+    line-height: 1.03;
+    letter-spacing: -0.022em;
+  }
+
+  .h2 {
+    font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  }
+
+  .lead {
+    font-size: 1.1875rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+    max-width: 62ch;
+  }
+
+  .label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  /* Haarlinienliste statt Kartenstapel. Trennt, ohne einzurahmen. */
+  .rule-list > * + * {
+    border-top: 1px solid var(--color-rule);
+  }
+
+  /* Logo als Alphamaske: eine Datei, jede Farbe. Funktioniert auf Leinen
+     und auf Nachtgrund, ohne zweites Asset. */
+  .mark {
+    display: block;
+    background-color: currentColor;
+    -webkit-mask-image: url("/bilder/logo-az.png");
+    mask-image: url("/bilder/logo-az.png");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+
+  /* Zustandsfeedback auf Tap. Kurz, sonst fühlt es sich träge an. */
+  .press {
+    transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .press:active {
+    transform: scale(0.985);
+  }
+}
+
+@layer utilities {
+  /* Der eine komponierte Moment: der Auftakt im Hero. Bewusst nicht auf
+     jeder Sektion wiederholt — eine Choreografie, kein Tic. */
+  .enter {
+    animation: enter 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Bildauftakt im Hero. Zwei Bewegungen, die dasselbe sagen: Das Bild
+     schiebt sich von unten frei und beruhigt sich dabei aus einer leichten
+     Überzeichnung heraus. 1200 ms, weil es unter dem Text liegt und nicht
+     um Aufmerksamkeit konkurrieren soll.
+
+     clip-path statt Höhenanimation: läuft im Compositor, kein Layout. */
+  .bild-auftakt {
+    animation: bild-auftakt 1200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 260ms;
+  }
+
+  @keyframes bild-auftakt {
+    from {
+      clip-path: inset(14% 0 0 0);
+      transform: scale(1.05);
+      opacity: 0;
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+      transform: none;
+      opacity: 1;
+    }
+  }
+
+  /* Scroll-Reveal. Nur Opazität und ein kurzer Weg nach oben — kein Zoom,
+     kein Schwenk. 620 ms ist lang genug, um ruhig zu wirken.
+
+     Sicherheitsregel: Der versteckte Ausgangszustand gilt NUR, wenn
+     `data-motion="an"` am <html> steht. Dieses Attribut setzt ein winziges
+     Inline-Skript im <head>, und zwar nur, wenn JavaScript läuft und keine
+     Bewegungsreduktion gewünscht ist.
+
+     Ohne JavaScript, bei einem Skriptfehler oder wenn der
+     IntersectionObserver nie auslöst, bleibt der Inhalt damit sichtbar.
+     Unsichtbarer Inhalt ist der schlimmste Ausgang einer Animation, und
+     genau der ist hier baulich ausgeschlossen. */
+  .reveal {
+    transition:
+      opacity 620ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :root[data-motion="an"] .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  :root[data-motion="an"] .reveal[data-sichtbar="ja"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Bewegung raus, Farbe bleibt. Bewusst kein globaler Dauer-Hammer:
+     Farbwechsel helfen beim Verstehen und sollen erhalten bleiben.
+     Neutralisiert wird nur, was die Position verändert. */
+  @media (prefers-reduced-motion: reduce) {
+    .enter,
+    .bild-auftakt {
+      animation: none;
+    }
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .press:active {
+      transform: none;
+    }
+  }
+}

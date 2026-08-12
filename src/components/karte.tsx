@@ -1,0 +1,154 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { praxis } from "@/data/praxis";
+import { lesen, setzen, EVENT } from "@/lib/consent";
+import { Pfeil } from "@/components/icons";
+
+/**
+ * Karte in zwei Stufen.
+ *
+ * **Stufe 1, ohne Einwilligung:** eine statische Karte, die auf dem eigenen
+ * Server liegt. Sie ist sofort sichtbar, und dabei geht kein einziger Request
+ * an einen fremden Server. Die Kartenkacheln wurden einmalig von
+ * OpenStreetMap geladen und liegen als ein einzelnes Bild in `public/bilder`.
+ * Für die häufigste Frage — wo ist die Praxis? — reicht das vollständig.
+ *
+ * **Stufe 2, nach Einwilligung:** die interaktive Karte zum Zoomen und
+ * Verschieben. Erst hier wird eine Verbindung zu OpenStreetMap aufgebaut,
+ * und erst hier fließt die IP-Adresse der Besucherin dorthin.
+ *
+ * Warum nicht einfach die interaktive Karte sofort laden: Das Einbetten
+ * fremder Inhalte überträgt personenbezogene Daten ohne Rechtsgrundlage. Für
+ * eine Arztpraxis ist das der abmahnungsanfälligste Punkt einer Website. Die
+ * statische Karte umgeht das Problem, statt es zu verwalten — sie sieht aus
+ * wie eine Karte, weil sie eine ist, und kostet rechtlich nichts.
+ *
+ * Die Attribution nach ODbL steht unter dem Bild. Sie ist Pflicht, auch bei
+ * selbst gehosteten Kacheln.
+ */
+
+// Aus der Adresse geokodiert (Photon/OpenStreetMap), nicht geraten.
+const LAT = 52.377731;
+const LON = 8.620361;
+const BBOX = [LON - 0.005, LAT - 0.0025, LON + 0.005, LAT + 0.0025]
+  .map((n) => n.toFixed(6))
+  .join(",");
+
+const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&layer=mapnik&marker=${LAT},${LON}`;
+const ROUTE = `https://www.openstreetmap.org/directions?to=${LAT}%2C${LON}`;
+
+export function Karte({
+  ueberschrift = "Anfahrt",
+  einleitung = "Die Praxis liegt in der Ostlandstraße, wenige Gehminuten vom Zentrum Espelkamps.",
+  id = "anfahrt-karte",
+}: {
+  /** `null` blendet die Überschrift aus — für Stellen, an denen der
+   *  umgebende Abschnitt bereits eine trägt. */
+  ueberschrift?: string | null;
+  einleitung?: string | null;
+  id?: string;
+} = {}) {
+  const [extern, setExtern] = useState(false);
+  const [bereit, setBereit] = useState(false);
+
+  useEffect(() => {
+    const anwenden = () => setExtern(lesen()?.extern === true);
+    anwenden();
+    setBereit(true);
+    window.addEventListener(EVENT, anwenden);
+    return () => window.removeEventListener(EVENT, anwenden);
+  }, []);
+
+  return (
+    <section
+      aria-labelledby={ueberschrift ? id : undefined}
+      aria-label={ueberschrift ? undefined : "Standort der Praxis"}
+    >
+      {ueberschrift && (
+        <h2 id={id} className="h2 text-night">
+          {ueberschrift}
+        </h2>
+      )}
+      {einleitung && <p className="lead mt-5">{einleitung}</p>}
+
+      <div
+        className={`overflow-hidden rounded-lg border border-rule ${ueberschrift || einleitung ? "mt-9" : ""}`}
+      >
+        {extern ? (
+          <iframe
+            src={EMBED}
+            title={`Interaktive Karte mit dem Standort der Praxis, ${praxis.adresse.strasse}, ${praxis.adresse.plz} ${praxis.adresse.ort}`}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            className="block h-[24rem] w-full border-0 sm:h-[30rem]"
+          />
+        ) : (
+          <div className="relative aspect-16/10 w-full sm:aspect-2/1">
+            <Image
+              src="/bilder/karte-praxis.webp"
+              alt={`Kartenausschnitt von Espelkamp. Die Praxis liegt an der Ostlandstraße, südöstlich des Bahnhofs und östlich der Bremer Straße.`}
+              fill
+              sizes="(min-width: 1024px) 76vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="mt-4 flex flex-col gap-x-8 gap-y-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-[0.8125rem] text-ink-soft">
+          Kartendaten:{" "}
+          <a
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2"
+          >
+            OpenStreetMap-Mitwirkende
+          </a>
+          {!extern && ", als Bild von unserem eigenen Server geladen"}
+        </p>
+
+        {bereit && !extern && (
+          <button
+            type="button"
+            onClick={() => setzen(true)}
+            className="inline-flex min-h-12 shrink-0 items-center text-[0.9375rem] font-medium text-petrol underline underline-offset-4"
+          >
+            Interaktive Karte laden
+          </button>
+        )}
+
+        {extern && (
+          <Link
+            href="/datenschutz#einwilligung"
+            className="inline-flex min-h-12 shrink-0 items-center text-[0.9375rem] text-ink-soft underline underline-offset-4 hover:text-night"
+          >
+            Einwilligung widerrufen
+          </Link>
+        )}
+      </div>
+
+      <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+        {/* Route funktioniert ohne Einwilligung: Der Link öffnet extern,
+            es wird nichts in diese Seite eingebettet. */}
+        <a
+          href={ROUTE}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="press inline-flex min-h-13 items-center justify-center gap-2.5 rounded-md bg-night px-7 font-semibold text-white transition-colors hover:bg-night-deep"
+        >
+          Route planen
+          <Pfeil size={19} />
+        </a>
+
+        <address className="not-italic leading-relaxed text-ink-soft">
+          {praxis.adresse.strasse}, {praxis.adresse.plz} {praxis.adresse.ort}
+        </address>
+      </div>
+    </section>
+  );
+}
