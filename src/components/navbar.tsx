@@ -101,7 +101,7 @@ export function Navbar({ terminAktiv }: { terminAktiv: boolean }) {
                   aktiv ? "font-semibold text-petrol" : "text-ink"
                 }`}
               >
-                {l.label}
+                <span className="ulink">{l.label}</span>
               </Link>
             );
           })}

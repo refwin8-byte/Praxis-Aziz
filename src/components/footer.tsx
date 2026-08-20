@@ -88,11 +88,8 @@ export function Footer() {
               { href: "/kontakt", label: "Kontakt & Anfahrt" },
             ].map((l) => (
               <li key={l.href}>
-                <Link
-                  href={l.href}
-                  className="inline-flex min-h-12 items-center underline-offset-4 hover:underline"
-                >
-                  {l.label}
+                <Link href={l.href} className="inline-flex min-h-12 items-center">
+                  <span className="ulink">{l.label}</span>
                 </Link>
               </li>
             ))}

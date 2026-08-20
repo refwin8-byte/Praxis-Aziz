@@ -12,6 +12,10 @@ export const praxis = {
 
   telefon: "05772 5511",
   telefonHref: "tel:+4957725511",
+  // TODO vor Veröffentlichung: durch das Praxispostfach auf eigener Domain
+  // ersetzen, sobald es eingerichtet ist. Diese Adresse ist die einzige
+  // Stelle — Kontaktseite und strukturierte Daten lesen von hier. Sie ist
+  // NIE Empfänger der Formulare (der kommt aus ANFRAGE_EMPFAENGER).
   email: "arztpraxis.dr.aziz@gmail.com",
 
   adresse: {

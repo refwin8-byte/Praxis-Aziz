@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SeitenKopf } from "@/components/seiten-kopf";
 import { praxis } from "@/data/praxis";
 import { terminBuchung } from "@/lib/termin";
+import { Reveal } from "@/components/reveal";
 import { Kalender, Rezept, Pfeil, Telefon, Uhr, Menschen } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -49,37 +49,46 @@ export default function Patientenservice() {
 
   return (
     <>
-      <SeitenKopf
-        titel="Patientenservice"
-        einleitung="Drei Anliegen, drei klare Wege. Und für alles andere: das Telefon — während der Sprechzeiten ist die Anmeldung besetzt."
-      />
+      {/* Hero, Variante C: aufgabenorientiert und bewusst knapp. Die drei
+          Servicekarten stehen noch im ersten Viewport — die Seite ist ein
+          Werkzeug, kein Schaufenster. */}
+      <header className="border-b border-rule">
+        <div className="container-page flex flex-col gap-5 pt-10 pb-8 lg:flex-row lg:items-end lg:justify-between lg:pt-12 lg:pb-9">
+          <h1 className="font-serif text-[clamp(2.2rem,4.5vw,3.4rem)] leading-[1.05] tracking-[-0.02em] text-night">
+            Patientenservice
+          </h1>
+          <p className="max-w-md text-[1.0625rem] text-ink-soft lg:pb-1.5 lg:text-right">
+            Drei Anliegen, drei klare Wege. Für alles andere:{" "}
+            <a href={praxis.telefonHref} className="num font-semibold text-petrol underline underline-offset-2">
+              {praxis.telefon}
+            </a>
+          </p>
+        </div>
+      </header>
 
-      <section className="container-page section" aria-label="Die drei Wege">
+      <section className="container-page pt-10 pb-16 lg:pt-12 lg:pb-24" aria-label="Die drei Wege">
         <div className="grid gap-8 lg:grid-cols-3">
-          {wege.map((w) => (
-            <article
-              key={w.titel}
-              className="flex flex-col rounded-md border border-rule bg-paper p-8"
-            >
-              <w.Icon size={28} className="text-petrol" />
-              <h2 className="mt-5 font-serif text-[1.625rem] font-normal text-night">{w.titel}</h2>
-              <p className="mt-3 flex-1 text-ink-soft">{w.text}</p>
-              <Link
-                href={w.href}
-                className="press mt-7 inline-flex min-h-13 items-center justify-center gap-2.5 rounded-md bg-night px-6 font-semibold text-white transition-colors hover:bg-night-deep"
-              >
-                {w.aktion}
-                <Pfeil size={19} />
-              </Link>
-            </article>
+          {wege.map((w, i) => (
+            <Reveal key={w.titel} delay={i * 80} className="h-full">
+              <article className="flex h-full flex-col rounded-md border border-rule bg-paper p-8">
+                <w.Icon size={28} className="text-petrol" />
+                <h2 className="mt-5 font-serif text-[1.625rem] font-normal text-night">{w.titel}</h2>
+                <p className="mt-3 flex-1 text-ink-soft">{w.text}</p>
+                <Link
+                  href={w.href}
+                  className="press mt-7 inline-flex min-h-13 items-center justify-center gap-2.5 rounded-md bg-night px-6 font-semibold text-white transition-colors hover:bg-night-deep"
+                >
+                  {w.aktion}
+                  <Pfeil size={19} />
+                </Link>
+              </article>
+            </Reveal>
           ))}
         </div>
 
         <p className="mt-10 max-w-2xl text-ink-soft">
-          Befunde, Rückfragen und alles Weitere klären wir am Telefon:{" "}
-          <a href={praxis.telefonHref} className="num font-semibold text-petrol underline underline-offset-2">
-            {praxis.telefon}
-          </a>
+          Befunde, Rückfragen und alles Weitere klären wir am Telefon. Während
+          der Sprechzeiten ist die Anmeldung besetzt.
         </p>
       </section>
 

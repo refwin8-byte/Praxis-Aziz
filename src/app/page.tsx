@@ -9,6 +9,8 @@ import { Reveal } from "@/components/reveal";
 import { Zahlen } from "@/components/zahlen";
 import { Karte } from "@/components/karte";
 import { GoogleBewertung } from "@/components/google-bewertung";
+import { PraxisVideo } from "@/components/praxis-video";
+import { heroLoop } from "@/data/medien";
 import { terminBuchung } from "@/lib/termin";
 
 export default function Startseite() {
@@ -103,14 +105,24 @@ export default function Startseite() {
         </div>
 
         <div className="bild-auftakt relative aspect-4/5 overflow-hidden rounded-lg bg-rule/40 lg:aspect-3/4">
-          <Image
-            src="/bilder/praxis-anmeldung.webp"
-            alt="Die Anmeldung der Praxis mit hellem Empfangstresen, Kunstdrucken an der Wand und dem Schild Anmeldung"
-            fill
-            priority
-            sizes="(min-width: 1024px) 38vw, 100vw"
-            className="object-cover"
-          />
+          {heroLoop ? (
+            <PraxisVideo
+              asset={heroLoop}
+              alt="Die Anmeldung der Praxis mit hellem Empfangstresen, Kunstdrucken an der Wand und dem Schild Anmeldung"
+              priority
+              className="h-full w-full"
+              sizes="(min-width: 1024px) 38vw, 100vw"
+            />
+          ) : (
+            <Image
+              src="/bilder/praxis-anmeldung.webp"
+              alt="Die Anmeldung der Praxis mit hellem Empfangstresen, Kunstdrucken an der Wand und dem Schild Anmeldung"
+              fill
+              priority
+              sizes="(min-width: 1024px) 38vw, 100vw"
+              className="object-cover"
+            />
+          )}
         </div>
       </section>
 
