@@ -332,9 +332,25 @@ export default function Startseite() {
       </section>
 
       {/* 6 — Sprechzeiten und Weg. Zusammen, weil beides dieselbe Frage
-          beantwortet: Wann und wo finde ich Sie? */}
-      <section className="bg-night text-white" aria-labelledby="finden">
-        <div className="container-page section grid gap-14 lg:grid-cols-[5fr_7fr] lg:gap-20">
+          beantwortet: Wann und wo finde ich Sie?
+
+          Im Hintergrund liegt, stark abgedunkelt, das grüne Espelkamp:
+          Baumkronen und Weg als Atmosphäre. Das Bild ist generiert (kein
+          realer Ort behauptet, keine Personen) und wird gegen ein eigenes
+          Foto des Auftraggebers getauscht, sobald es ohne fremde
+          Wasserzeichen vorliegt — ein Street-View-Screenshot kam aus
+          Lizenzgründen nicht infrage. */}
+      <section className="relative overflow-hidden bg-night text-white" aria-labelledby="finden">
+        <Image
+          src="/bilder/gruen-espelkamp.webp"
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div aria-hidden="true" className="absolute inset-0 bg-night/85" />
+        <div className="container-page section relative grid gap-14 lg:grid-cols-[5fr_7fr] lg:gap-20">
           <div>
             <h2 id="finden" className="h2">
               Sprechzeiten und Anfahrt
