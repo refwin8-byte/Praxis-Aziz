@@ -121,7 +121,7 @@ export default function Praxis() {
         {praxisBand && (
           <PraxisVideo asset={praxisBand} alt="" fuellend sizes="100vw" />
         )}
-        <div aria-hidden="true" className="absolute inset-0 bg-night/85" />
+        <div aria-hidden="true" className="absolute inset-0 bg-night/92" />
         <div className="container-page relative py-12 lg:py-14">
           <Reveal>
             <div className="linie h-px w-full bg-white/15" aria-hidden="true" />
