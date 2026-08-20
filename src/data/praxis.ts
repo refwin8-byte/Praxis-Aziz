@@ -12,6 +12,10 @@ export const praxis = {
 
   telefon: "05772 5511",
   telefonHref: "tel:+4957725511",
+  // TODO vor Veröffentlichung: durch das Praxispostfach auf eigener Domain
+  // ersetzen, sobald es eingerichtet ist. Diese Adresse ist die einzige
+  // Stelle — Kontaktseite und strukturierte Daten lesen von hier. Sie ist
+  // NIE Empfänger der Formulare (der kommt aus ANFRAGE_EMPFAENGER).
   email: "arztpraxis.dr.aziz@gmail.com",
 
   adresse: {
@@ -145,6 +149,45 @@ export const praxisZahlen: PraxisZahl[] = [
 ];
 
 /**
+ * Urlaubs- und Sonderschließzeiten.
+ *
+ * Der Öffnungsstatus behandelt diese Tage wie Sonntage, Grenzen
+ * einschließlich. Gesetzliche NRW-Feiertage werden automatisch berechnet und
+ * gehören NICHT hierher — hierher gehören Praxisurlaub, Fortbildungstage,
+ * Heiligabend und Silvester, sobald die Praxis sie nennt.
+ *
+ * Format: ISO-Datum „YYYY-MM-DD". Der Grund erscheint im Status („wegen
+ * Urlaub geschlossen"), wenn er gesetzt ist.
+ */
+export const urlaube: { von: string; bis: string; grund?: string }[] = [
+  // Beispiel: { von: "2026-12-24", bis: "2026-12-31", grund: "Weihnachtsurlaub" },
+];
+
+/**
+ * Google-Bewertung der Praxis, als Zahl mit Quellenlink — bewusst KEIN
+ * eingebettetes Google-Widget: Ein Widget würde bei jedem Seitenaufruf Daten
+ * an Google übertragen und bräuchte eine Einwilligung. Der reine Link kostet
+ * nichts und führt zu denselben Bewertungen.
+ *
+ * TODO vor Livegang: Wert und Anzahl direkt am Google-Unternehmensprofil
+ * ablesen und hier eintragen; der aktuelle Stand stammt aus einem
+ * Branchenverzeichnis (cylex.de, August 2026) und ist aus zweiter Hand.
+ * Danach regelmäßig aktualisieren — eine veraltete Zahl ist angreifbar.
+ * Steht `null` hier, verschwindet der Block von der Seite.
+ */
+export const googleBewertung: {
+  wert: number;
+  anzahl: number;
+  stand: string;
+  url: string;
+} | null = {
+  wert: 4.2,
+  anzahl: 65,
+  stand: "August 2026",
+  url: "https://www.google.com/maps/search/?api=1&query=Praxis+Dr.+med.+Adel+Aziz+Ostlandstra%C3%9Fe+17+32339+Espelkamp",
+};
+
+/**
  * Notfallnummern. Sicherheitsrelevant: Diese Angaben dürfen gestalterischer
  * Zurückhaltung nie zum Opfer fallen und stehen im Footer jeder Seite.
  */
@@ -164,32 +207,11 @@ export const notfall = {
 } as const;
 
 /**
- * Ziel der Rezept- und Überweisungsanfrage.
- *
- * Diese Seite verarbeitet selbst KEINE Gesundheitsdaten. Sie verlinkt auf die
- * bestehende, bereits laufende Formularlösung der Praxis. Deren Formulare
- * liegen als Anker auf der Startseite der Bestandsseite.
- *
- * ACHTUNG, LAUNCH-BLOCKER: Sobald dieser Relaunch die Domain
- * praxis-dr-aziz.de übernimmt, zeigen diese Links ins Leere — die Seite würde
- * auf sich selbst verweisen. Vor dem Livegang ist genau eine der folgenden
- * Entscheidungen nötig:
- *
- *   a) Die Bestandslösung bleibt unter einer eigenen Adresse erreichbar,
- *      etwa formulare.praxis-dr-aziz.de. Dann hier eintragen.
- *   b) Ein geprüfter Anbieter für Patientenformulare wird angebunden
- *      (mit Auftragsverarbeitungsvertrag und Verschlüsselung).
- *   c) `aktiv` wird auf false gesetzt. Dann zeigt die Seite statt der Buttons
- *      den Telefonweg. Das ist der sichere Rückfallpfad, und er funktioniert
- *      ohne jede weitere Arbeit.
+ * Die Formulare für Rezept und Überweisung laufen seit dem
+ * Patientenservice-Ausbau über die eigenen Seiten unter /patientenservice
+ * und senden über die Server Action an das Praxispostfach (siehe
+ * src/lib/mailer.ts). Entschieden ist: Die Praxis erhält dafür ein Postfach
+ * auf eigener Domain mit Auftragsverarbeitungsvertrag. Bis die Zugangsdaten
+ * in .env.local liegen, senden die Formulare nichts und verweisen sichtbar
+ * auf den Telefonweg — es gibt keinen stillen Fehlschlag.
  */
-export const anfrageZiel = {
-  // Auf false gestellt: Die Links führten auf die Formulare der alten
-  // Website. Sobald der Relaunch diese Domain übernimmt, zeigten sie ins
-  // Leere — und bis dahin wirkte es unstimmig, Patienten aus der neuen Seite
-  // heraus auf die alte zu schicken. Bis eine geprüfte Formularlösung
-  // angebunden ist, gilt der Telefonweg.
-  aktiv: false,
-  rezept: "https://praxis-dr-aziz.de/#rezept",
-  ueberweisung: "https://praxis-dr-aziz.de/#ueberweisung",
-} as const;

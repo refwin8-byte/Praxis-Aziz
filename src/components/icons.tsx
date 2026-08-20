@@ -123,3 +123,14 @@ export function Schliessen({ size = 24, className }: Props) {
     </svg>
   );
 }
+
+/** Stern für die Google-Bewertung — der einzige Ort, an dem auf dieser
+ *  Website ein Stern erlaubt ist, weil dort eine echte, verlinkte
+ *  Fremdbewertung dahintersteht. Gefüllt, damit er als Wertung lesbar ist. */
+export function Stern({ size = 24, className }: Props) {
+  return (
+    <svg {...base(size, className)} fill="currentColor" strokeWidth={0}>
+      <path d="M12 3.2l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.6l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8L12 3.2Z" />
+    </svg>
+  );
+}

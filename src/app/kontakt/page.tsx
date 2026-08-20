@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { praxis, notfall } from "@/data/praxis";
 import { gruppierteZeiten } from "@/lib/oeffnungszeiten";
-import { SeitenKopf } from "@/components/seiten-kopf";
 import { Oeffnungsstatus } from "@/components/oeffnungsstatus";
 import { Karte } from "@/components/karte";
-import { Telefon, Pin, Pfeil } from "@/components/icons";
+import { Reveal } from "@/components/reveal";
+import { Telefon, Pin } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Kontakt und Anfahrt",
@@ -18,58 +19,63 @@ export default function Kontakt() {
 
   return (
     <>
-      <SeitenKopf
-        titel="Kontakt und Anfahrt"
-        einleitung="Termine vereinbaren wir telefonisch. Während der Sprechzeiten ist die Anmeldung besetzt."
-      />
+      {/* Hero, Variante D: kompakt und funktional. Telefonnummer, Status
+          und Adresse stehen sofort da, rechts der visuelle Anfahrtsanker —
+          das eigene statische Kartenbild, das zur großen Karte springt. */}
+      <header className="border-b border-rule">
+        <div className="container-page grid gap-10 pt-10 pb-10 lg:grid-cols-[7fr_5fr] lg:gap-16 lg:pt-14 lg:pb-14">
+          <div>
+            <h1 className="font-serif text-[clamp(2.2rem,4.5vw,3.4rem)] leading-[1.05] tracking-[-0.02em] text-night">
+              Kontakt und Anfahrt
+            </h1>
 
-      <div className="container-page section grid gap-14 lg:grid-cols-[7fr_5fr] lg:gap-20">
-        <div>
-          <dl className="rule-list border-t border-rule">
-            <div className="flex gap-6 py-7">
-              <dt className="mt-1 shrink-0">
-                <Telefon size={24} className="text-petrol" />
-                <span className="sr-only">Telefon</span>
-              </dt>
-              <dd>
+            <div className="mt-7 flex items-center gap-5">
+              <Telefon size={26} className="shrink-0 text-petrol" aria-hidden="true" />
+              <div>
                 <a
                   href={praxis.telefonHref}
-                  className="num inline-flex min-h-12 items-center text-[1.75rem] font-semibold text-night underline-offset-4 hover:underline"
+                  className="num inline-flex min-h-12 items-center text-[clamp(1.9rem,3.5vw,2.6rem)] font-semibold leading-none text-night underline-offset-8 hover:underline"
                 >
                   {praxis.telefon}
                 </a>
-                <p className="mt-1 text-ink-soft">
-                  Termine, Befunde und alle Fragen, die kein Formular abbildet.
-                </p>
-                <Oeffnungsstatus className="mt-4" />
-              </dd>
+                <Oeffnungsstatus className="mt-2" />
+              </div>
             </div>
 
-            <div className="flex gap-6 py-7">
-              <dt className="mt-1 shrink-0">
-                <Pin size={24} className="text-petrol" />
-                <span className="sr-only">Adresse</span>
-              </dt>
-              <dd>
-                <address className="not-italic text-[1.1875rem] leading-relaxed text-night">
-                  {praxis.name}
-                  <br />
-                  {praxis.adresse.strasse}
-                  <br />
-                  {praxis.adresse.plz} {praxis.adresse.ort}
-                </address>
-                <a
-                  href="#anfahrt-karte"
-                  className="press mt-4 inline-flex min-h-12 items-center gap-2.5 font-semibold text-petrol underline-offset-4 hover:underline"
-                >
-                  Zur Karte
-                  <Pfeil size={19} />
-                </a>
-              </dd>
+            <div className="mt-7 flex items-start gap-5 border-t border-rule pt-6">
+              <Pin size={24} className="mt-1 shrink-0 text-petrol" aria-hidden="true" />
+              <address className="not-italic text-[1.125rem] leading-relaxed text-night">
+                {praxis.name}, {praxis.adresse.strasse},{" "}
+                {praxis.adresse.plz} {praxis.adresse.ort}
+              </address>
             </div>
-          </dl>
+          </div>
 
-          <div className="mt-12">
+          <div>
+            <a href="#anfahrt-karte" className="press block" aria-label="Zur großen Karte springen">
+              <Reveal className="reveal-bild">
+                <div className="relative aspect-16/10 overflow-hidden rounded-lg border border-rule bg-rule/40">
+                  <Image
+                    src="/bilder/karte-praxis.webp"
+                    alt="Kartenausschnitt von Espelkamp mit Markierung der Praxis in der Ostlandstraße 17"
+                    fill
+                    sizes="(min-width: 1024px) 38vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              </Reveal>
+            </a>
+            <p className="mt-3 text-[0.875rem] text-ink-soft">
+              Kartenbild vom eigenen Server — die interaktive Karte finden Sie
+              weiter unten.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <div className="container-page section grid gap-14 lg:grid-cols-[7fr_5fr] lg:gap-20">
+        <div>
+          <div>
             <h2 className="h2 text-night">Sprechzeiten</h2>
             <dl className="mt-7 rule-list border-t border-rule">
               {zeiten.map((g) => (

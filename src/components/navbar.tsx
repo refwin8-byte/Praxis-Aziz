@@ -8,12 +8,18 @@ import { Telefon, Menue, Schliessen } from "@/components/icons";
 
 const links = [
   { href: "/leistungen", label: "Leistungen" },
-  { href: "/praxis", label: "Praxis" },
-  { href: "/rezept-und-ueberweisung", label: "Rezept & Überweisung" },
-  { href: "/kontakt", label: "Kontakt" },
+  { href: "/praxis", label: "Praxis & Team" },
+  { href: "/patientenservice", label: "Patientenservice" },
+  { href: "/kontakt", label: "Kontakt & Anfahrt" },
 ];
 
-export function Navbar() {
+/**
+ * `terminAktiv` kommt aus dem Layout (Server): Nur wenn ein
+ * Buchungsanbieter konfiguriert ist, gibt es den „Termin buchen"-Button.
+ * Ohne Anbieter bleibt das Telefon die Primäraktion — ein Buchungsknopf,
+ * hinter dem keine Buchung liegt, wäre schlimmer als keiner.
+ */
+export function Navbar({ terminAktiv }: { terminAktiv: boolean }) {
   const [offen, setOffen] = useState(false);
   const pfad = usePathname();
 
@@ -80,9 +86,11 @@ export function Navbar() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Hauptnavigation">
+        <nav className="hidden items-center gap-7 lg:flex" aria-label="Hauptnavigation">
           {links.map((l) => {
-            const aktiv = pfad === l.href;
+            // Unterseiten zählen mit: Auf /patientenservice/rezept ist
+            // „Patientenservice" der aktive Bereich.
+            const aktiv = pfad === l.href || pfad.startsWith(`${l.href}/`);
             return (
               <Link
                 key={l.href}
@@ -93,17 +101,35 @@ export function Navbar() {
                   aktiv ? "font-semibold text-petrol" : "text-ink"
                 }`}
               >
-                {l.label}
+                <span className="ulink">{l.label}</span>
               </Link>
             );
           })}
-          <a
-            href={praxis.telefonHref}
-            className="press inline-flex min-h-12 items-center gap-2.5 rounded-md bg-night px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-night-deep"
-          >
-            <Telefon size={18} />
-            <span className="num">{praxis.telefon}</span>
-          </a>
+          {terminAktiv ? (
+            <>
+              <a
+                href={praxis.telefonHref}
+                className="inline-flex min-h-12 items-center gap-2 px-1 text-[0.9375rem] font-semibold text-ink transition-colors hover:text-petrol"
+              >
+                <Telefon size={17} />
+                <span className="num">{praxis.telefon}</span>
+              </a>
+              <Link
+                href="/patientenservice/termin"
+                className="press inline-flex min-h-12 items-center rounded-md bg-night px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-night-deep"
+              >
+                Termin buchen
+              </Link>
+            </>
+          ) : (
+            <a
+              href={praxis.telefonHref}
+              className="press inline-flex min-h-12 items-center gap-2.5 rounded-md bg-night px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-night-deep"
+            >
+              <Telefon size={18} />
+              <span className="num">{praxis.telefon}</span>
+            </a>
+          )}
         </nav>
 
         <div className="flex items-center gap-2 lg:hidden">
@@ -135,13 +161,24 @@ export function Navbar() {
                 <Link
                   href={l.href}
                   onClick={nachObenWennSchonDa}
-                  aria-current={pfad === l.href ? "page" : undefined}
+                  aria-current={pfad === l.href || pfad.startsWith(`${l.href}/`) ? "page" : undefined}
                   className="block py-4 text-[1.0625rem] font-medium text-ink"
                 >
                   {l.label}
                 </Link>
               </li>
             ))}
+            {terminAktiv && (
+              <li>
+                <Link
+                  href="/patientenservice/termin"
+                  onClick={nachObenWennSchonDa}
+                  className="block py-4 text-[1.0625rem] font-semibold text-petrol"
+                >
+                  Termin buchen
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
       )}

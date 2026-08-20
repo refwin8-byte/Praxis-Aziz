@@ -17,7 +17,7 @@ export default function NichtGefunden() {
           {[
             { href: "/", label: "Startseite" },
             { href: "/leistungen", label: "Leistungen" },
-            { href: "/rezept-und-ueberweisung", label: "Rezept und Überweisung" },
+            { href: "/patientenservice", label: "Patientenservice" },
             { href: "/kontakt", label: "Kontakt und Anfahrt" },
           ].map((l) => (
             <li key={l.href}>

@@ -225,6 +225,19 @@ funktioniert es auf Leinen und auf Nachtgrund mit einer einzigen Datei.
 Für keinen der Ärzte wird ein generiertes oder gekauftes Gesicht verwendet.
 Läge für einen von beiden kein Foto vor, stünde er rein typografisch.
 
+Zwei präzise Ausnahmen vom Nur-echte-Fotos-Grundsatz, beide entschieden:
+
+- **Der Hero-Loop der Startseite** (`/video/hero-loop.*`) ist per
+  Image-to-Video aus dem echten Anmeldungsfoto erzeugt. Verwendet sind nur
+  die ersten zwei Sekunden der Generierung, in denen die Kamera dem Foto
+  treu bleibt, als nahtlose Vor-und-zurück-Schleife; die vom Modell
+  erfundenen Bildränder sind weggeschnitten. Räume und Gegenstände sind die
+  der echten Praxis.
+- **Das Diagnostik-Stillleben** (`diagnostik-detail.webp`, Leistungsseite)
+  ist generiert und zeigt ausschließlich unbeschriftete Gegenstände — kein
+  Raum, keine Menschen, keine lesbaren Daten. Es steht mit dem Vermerk
+  „Symbolbild" unter dem Bild. Generierte Räume oder Personen bleiben tabu.
+
 Keine Karte von Google. Die Karte auf der Kontaktseite kommt von
 OpenStreetMap und läuft über eine **Zwei-Klick-Lösung**: Vor der Zustimmung
 existiert kein iframe, kein Vorabruf, kein Preconnect — es fließt kein Byte
@@ -240,9 +253,13 @@ Zustimmung einholen, für die es nichts einzuwilligen gibt.
 
 - Kein Hellblau, kein Verlaufshintergrund, kein Blob, kein Glow.
 - Keine Stockfotos. Keine generierten Gesichter.
-- Keine erfundenen Zahlen: keine Patientenzahlen, keine Bewertungen,
-  keine Sterne, keine Auszeichnungen. (§ 11 HWG)
-- Kein „Termin buchen"-Button, solange es keine Onlinebuchung gibt.
+- Keine erfundenen Zahlen und keine erfundenen Bewertungen. (§ 11 HWG)
+  Die eine Ausnahme vom Sterne-Verbot: der Google-Gesamtwert im
+  Vertrauensbereich — eine echte, verlinkte, überprüfbare Fremdbewertung
+  mit sichtbarem Stand. Kein Widget, keine herausgegriffenen Zitate.
+- Kein „Termin buchen"-Button ohne echte Onlinebuchung. Der Button
+  existiert nur, wenn `APPOINTMENT_PROVIDER_URL` konfiguriert ist
+  (src/lib/termin.ts); sonst ist das Telefon die Primäraktion.
 - Kein `transition: all`.
 - Keine Eyebrow über jeder Sektion. Höchstens eine pro drei Sektionen.
 - Keine eigene Verarbeitung von Gesundheitsdaten.

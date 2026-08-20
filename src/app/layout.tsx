@@ -3,8 +3,11 @@ import { Newsreader, Source_Sans_3 } from "next/font/google";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ConsentBanner } from "@/components/consent-banner";
+import { NotfallLeiste } from "@/components/notfall-leiste";
+import { MobileAktionsleiste } from "@/components/mobile-aktionsleiste";
 import { praxis } from "@/data/praxis";
 import { schemaZeiten } from "@/lib/oeffnungszeiten";
+import { terminBuchung } from "@/lib/termin";
 import "./globals.css";
 
 /**
@@ -112,14 +115,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="min-h-dvh">
+      {/* Auf schmalen Geräten hält die Polsterung unten den Platz frei, den
+          die feste Aktionsleiste einnimmt — sonst verdeckte sie das Ende des
+          Footers und die letzten Zeilen jeder Seite. */}
+      <body className="min-h-dvh pb-20 lg:pb-0">
         <a
           href="#inhalt"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-night focus:px-5 focus:py-3 focus:text-white"
         >
           Zum Inhalt springen
         </a>
-        <Navbar />
+        <NotfallLeiste />
+        <Navbar terminAktiv={terminBuchung() !== null} />
         {/* tabIndex -1: Ohne das verschiebt der Skip-Link nur den Scroll, der
             Tastaturfokus bliebe im Header und der nächste Tab liefe zurück
             in die Navigation. */}
@@ -127,6 +134,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <MobileAktionsleiste />
         <ConsentBanner />
         <StrukturierteDaten />
       </body>

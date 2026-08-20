@@ -1,35 +1,47 @@
 import Link from "next/link";
 import { praxis } from "@/data/praxis";
-import { Rezept, Telefon, Pfeil } from "@/components/icons";
+import { terminBuchung } from "@/lib/termin";
+import { Rezept, Telefon, Pfeil, Kalender, Menschen } from "@/components/icons";
 
 /**
- * Die drei Wege auf der Startseite: Rezept, Überweisung, Telefon.
+ * Der Patientenschnellzugriff auf der Startseite: Termin, Folgerezept,
+ * Überweisung — die drei Anliegen, getrennt und in je einem Satz erklärt,
+ * einschließlich dessen, was man bereithalten muss.
  *
- * Rezept und Überweisung führen auf die Formularseite dieser Website — nicht
- * mehr auf die Formulare der alten Seite. Das Formular selbst steht bewusst
- * nicht hier: Wer ein Rezept anfordert, soll vorher lesen, was er
- * bereithalten muss und wie lange es dauert. Ein Formular mitten auf der
- * Startseite überspringt das.
+ * Die Formulare selbst stehen bewusst nicht hier: Wer ein Rezept anfordert,
+ * soll vorher lesen, was er bereithalten muss und wie lange es dauert. Ein
+ * Formular mitten auf der Startseite überspringt das.
  */
 
-const wege = [
-  {
-    Icon: Rezept,
-    titel: "Folgerezept anfordern",
-    text: "Für Medikamente, die Sie regelmäßig einnehmen. Halten Sie Name, Dosierung und Packungsgröße bereit.",
-    href: "/rezept-und-ueberweisung#rezept",
-    aktion: "Zum Formular",
-  },
-  {
-    Icon: Rezept,
-    titel: "Überweisung anfordern",
-    text: "Für den Besuch bei einer Fachärztin oder einem Facharzt. Fachrichtung und Grund genügen.",
-    href: "/rezept-und-ueberweisung#ueberweisung",
-    aktion: "Zum Formular",
-  },
-] as const;
-
 export function AnfrageAktionen() {
+  const buchung = terminBuchung();
+
+  const wege = [
+    {
+      Icon: Kalender,
+      titel: buchung ? "Termin buchen" : "Termin vereinbaren",
+      text: buchung
+        ? `Online über ${buchung.anbieter} oder telefonisch. Halten Sie Ihre Versichertenkarte bereit.`
+        : "Telefonisch, damit wir die Dringlichkeit direkt einschätzen können. Halten Sie Ihre Versichertenkarte bereit.",
+      href: "/patientenservice/termin",
+      aktion: buchung ? "Termin buchen" : "Zum Terminweg",
+    },
+    {
+      Icon: Rezept,
+      titel: "Folgerezept anfordern",
+      text: "Für Medikamente, die Sie regelmäßig einnehmen. Halten Sie Name, Wirkstärke und Packungsgröße bereit.",
+      href: "/patientenservice/rezept",
+      aktion: "Zum Formular",
+    },
+    {
+      Icon: Menschen,
+      titel: "Überweisung anfordern",
+      text: "Für den Besuch bei einer Fachärztin oder einem Facharzt. Fachrichtung und Grund genügen.",
+      href: "/patientenservice/ueberweisung",
+      aktion: "Zum Formular",
+    },
+  ] as const;
+
   return (
     <div className="mt-14">
       <ul className="rule-list border-t border-white/15">
@@ -57,7 +69,7 @@ export function AnfrageAktionen() {
             <Telefon size={26} className="shrink-0 text-sage" />
             <span className="flex-1">
               <span className="block text-[1.3125rem] font-semibold">
-                Termin, Befund oder Rückfrage
+                Befund, Rückfrage oder etwas anderes
               </span>
               <span className="mt-1.5 block text-[0.9375rem] text-white/70">
                 Alles Weitere klären wir am Telefon. Während der Sprechzeiten
