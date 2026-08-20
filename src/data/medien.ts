@@ -37,16 +37,32 @@ export type MotionAsset = {
  * Kamera in durchgehenden 24 fps, ohne nachträgliches Strecken oder
  * Interpolieren (die Ursache des Ruckelns der ersten beiden Fassungen).
  * Der 4:5-Ausschnitt entspricht der Komposition des Originalfotos; die
- * vom Modell erfundenen 16:9-Ränder sind weggeschnitten. Poster =
- * erstes Frame. „v3" im Namen wegen des Bild-Caches: Beim Austausch
- * immer den Dateinamen ändern.
+ * vom Modell erfundenen 16:9-Ränder sind weggeschnitten. Für v4 ist die
+ * native Schleife zusätzlich auf 2,2-fache Länge gedehnt und sauber auf
+ * 30 fps interpoliert — bei dieser winzigen Bewegung artefaktfrei. Ein
+ * voller Atemzug dauert jetzt 17,5 s. Poster = erstes Frame. Versionszahl
+ * im Namen wegen des Bild-Caches: Beim Austausch immer umbenennen.
  */
 export const heroLoop: MotionAsset | null = {
-  webm: "/video/hero-loop-v3.webm",
-  mp4: "/video/hero-loop-v3.mp4",
-  poster: "/video/hero-loop-v3-poster.webp",
+  webm: "/video/hero-loop-v4.webm",
+  mp4: "/video/hero-loop-v4.mp4",
+  poster: "/video/hero-loop-v4-poster.webp",
   breite: 864,
   hoehe: 1080,
+};
+
+/**
+ * Praxis & Team, Hintergrund des Faktenbands. Derselbe Loop als breiter
+ * Ausschnitt (aus dem 16:9-Master, 21:9-nah beschnitten), liegt hinter
+ * einer deckenden Petrol-Fläche — Atmosphäre, kein Blickfang. Gleiche
+ * Laufzeit und Glättung wie der Hero-Loop.
+ */
+export const praxisBand: MotionAsset | null = {
+  webm: "/video/praxis-band.webm",
+  mp4: "/video/praxis-band.mp4",
+  poster: "/video/praxis-band-poster.webp",
+  breite: 1440,
+  hoehe: 612,
 };
 
 /** Praxis & Team, Hero-Foto. Quelle: praxis-wartebereich.webp, 6 s, 4:5. */

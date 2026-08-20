@@ -28,6 +28,7 @@ export function PraxisVideo({
   priority = false,
   className = "",
   sizes = "100vw",
+  fuellend = false,
 }: {
   asset: MotionAsset;
   /** Beschreibt das Posterfoto — das Video selbst ist aria-hidden. */
@@ -35,6 +36,9 @@ export function PraxisVideo({
   priority?: boolean;
   className?: string;
   sizes?: string;
+  /** Als füllender Hintergrund: kein festes Seitenverhältnis, der
+   *  Container des Aufrufers bestimmt die Fläche (object-cover). */
+  fuellend?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -78,8 +82,8 @@ export function PraxisVideo({
   return (
     <div
       ref={wrapRef}
-      className={`relative overflow-hidden ${className}`}
-      style={{ aspectRatio: `${asset.breite} / ${asset.hoehe}` }}
+      className={`${fuellend ? "absolute inset-0" : "relative"} overflow-hidden ${className}`}
+      style={fuellend ? undefined : { aspectRatio: `${asset.breite} / ${asset.hoehe}` }}
     >
       <Image
         src={asset.poster}

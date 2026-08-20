@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { praxis, aerzte } from "@/data/praxis";
-import { praxisLoop } from "@/data/medien";
+import { praxisLoop, praxisBand } from "@/data/medien";
 import { PraxisVideo } from "@/components/praxis-video";
 import { Reveal } from "@/components/reveal";
 import { Pfeil } from "@/components/icons";
@@ -110,9 +110,19 @@ export default function Praxis() {
       </section>
 
       {/* Faktenband auf Petrol: kurzer Rhythmuswechsel zwischen Text und
-          Ärzten. Nur Belegtes, keine Superlative. */}
-      <section className="bg-night text-white" aria-label="Die Praxis in Kürze">
-        <div className="container-page py-12 lg:py-14">
+          Ärzten. Nur Belegtes, keine Superlative. Dahinter liegt der ruhige
+          Anmeldungs-Loop als Atmosphäre — stark abgedunkelt, damit die
+          Fakten lesbar bleiben und das Video Hintergrund bleibt. Auf Mobil
+          und bei reduced motion liegt nur das Standbild dahinter. */}
+      <section
+        className="relative overflow-hidden bg-night text-white"
+        aria-label="Die Praxis in Kürze"
+      >
+        {praxisBand && (
+          <PraxisVideo asset={praxisBand} alt="" fuellend sizes="100vw" />
+        )}
+        <div aria-hidden="true" className="absolute inset-0 bg-night/85" />
+        <div className="container-page relative py-12 lg:py-14">
           <Reveal>
             <div className="linie h-px w-full bg-white/15" aria-hidden="true" />
             <dl className="grid gap-x-12 gap-y-8 pt-8 sm:grid-cols-3">
