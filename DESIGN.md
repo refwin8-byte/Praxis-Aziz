@@ -50,36 +50,57 @@ Nicht bewahrt wird die Farbwelt der Bestandsseite (Dunkelgrün auf Weiß aus dem
 IONOS-Baukasten) und ihre Typografie. Beides war Template-Default, kein
 Markenentscheid.
 
-## Farbe: Committed
+## Farbe: Die grüne Hausarztpraxis (Richtung „Espelkamp Editorial", 8/2026)
 
-Eine gesättigte Farbe trägt große Flächen. Keine Akzente auf Neutral.
+Grün ist der lokale Markenanker — die alte Website war grün geprägt, und
+Espelkamp ist eine grüne Stadt. Die Grünfamilie wird weiterentwickelt,
+nicht abgeschnitten. Eine gesättigte Farbe trägt große Flächen.
 
 | Token | Wert | Rolle |
 |---|---|---|
-| `--linen` | `#F4F1EC` | Grund. Warmes Off-White, **nie Klinikweiß, nie Creme** |
+| `--linen` | `#F4F1EA` | Grund. Warmes Off-White, **nie Klinikweiß** |
 | `--paper` | `#FCFAF7` | Abgehobene Flächen, Formularblöcke |
-| `--night` | `#12262B` | Tiefes Petrol-Anthrazit. Trägt ganze Sektionen |
-| `--night-deep` | `#0B181C` | Footer, Hover auf Dunkel |
-| `--night-soft` | `#1E3A40` | Flächen innerhalb von Dunkel |
-| `--sage` | `#7FA08C` | Salbei. Highlights **auf** Dunkel |
-| `--sage-bright` | `#A8C4B2` | Salbei für kleinen Text auf `--night-soft` |
-| `--petrol` | `#2C6A6E` | Der Akzent auf Hell. Links, aktive Marker |
-| `--ink` | `#14201F` | Fließtext |
-| `--ink-soft` | `#55605E` | Sekundärtext |
-| `--rule` | `#DFD9D0` | Haarlinien |
+| `--night` | `#102F2D` | Tiefgrün-Petrol. Nav, Footer, Primäraktion |
+| `--night-deep` | `#0A2220` | Footer-Grund, Hover auf Dunkel |
+| `--night-soft` | `#1D5244` | Flächen innerhalb von Dunkel |
+| `--wald` | `#174B3A` | Waldgrün. Große Markenflächen, je ein Kapitel pro Seite |
+| `--petrol` | `#3F7657` | Espelkamp-Grün. Der lebendige Akzent auf Hell |
+| `--sage` | `#82A96E` | Blattgrün. Linien, Icons, Grafik auf Dunkel |
+| `--sage-bright` | `#BED3C2` | Helles Blatt für kleinen Text auf `--wald`/`--night-soft` |
+| `--salbei` | `#DCE7D8` | Helles Salbei. Ruhige Serviceflächen, Porträtgrund |
+| `--ocker` | `#D4B35F` | Warmes Ocker. **Nur** Nummern, Fäden, ein Punkt pro Viewport. Nie Textfarbe |
+| `--ink` | `#16211C` | Fließtext |
+| `--ink-soft` | `#56615B` | Sekundärtext |
+| `--rule` | `#DDD8CC` | Haarlinien |
 | `--open` | `#2A6B45` | Zustandsfarbe „jetzt geöffnet" |
 | `--alert` | `#A8321F` | Zustandsfarbe. **Nur Notfall** |
 
-Kein Standard-Krankenhausblau. Das Dunkel hat einen Grünstich, damit es mit
-dem Salbei eine Familie bildet statt einen Kontrast.
+Gemessene Kontraste: Weiß auf `--night` 14,6:1 · Weiß auf `--wald` 8,9:1 ·
+`--petrol` auf `--linen` 4,76:1 (trägt Text) · `--sage-bright` auf `--wald`
+6,4:1 · `--sage` auf `--night` 5,4:1, auf `--wald` nur 3,7:1 (dort nur
+große Schrift oder Grafik) · `--ink` auf `--salbei` 12,4:1.
 
-Warum es zwei Salbeitöne gibt: `--sage` erreicht auf `--night` 5.29:1 und
-trägt dort auch kleinen Text. Auf der helleren Fläche `--night-soft` fällt es
-auf 4.21:1 und damit durch WCAG AA. Statt den Ton global aufzuhellen und die
-Wirkung auf Nachtgrund zu verlieren, gibt es eine zweite, hellere Stufe für
-genau diesen Fall. Im Browser nachgemessen: 4.80:1 auf `--night-soft`.
-
+Farbregeln: maximal drei Farbstimmungen pro Viewport. Zwischen kräftigen
+Grün-Höhepunkten bleiben bewusst ruhige Leinenflächen. Der Naturbezug
+entsteht über Farbe, Licht (`.grade`-Foto-Grade auf Raumaufnahmen, nie auf
+Porträts) und Form — keine Blätter-Icons, keine Pflanzenmuster.
 `--open` und `--alert` sind Zustandsfarben, keine Markenfarben.
+
+## Aziz-Signatur
+
+Vier grafische Elemente, höchstens ein bis zwei pro Seite — Markensystem,
+nicht Dekoration (Klassen in globals.css):
+
+- `.nr-gross` — übergroße redaktionelle Abschnittsnummern (Ocker auf Hell,
+  helles Blatt auf Dunkel), immer `aria-hidden`.
+- `.az-kreis` — der Kreis aus dem AZ-Monogramm als ruhige Bildebene.
+- `.az-letter` — angeschnittene AZ-Letter als Hintergrundtypografie,
+  Opazität ≤ 0,14.
+- `.faden` — der Ockerfaden, ein kurzes Markensignal (Hero, Übergänge).
+
+Wegfarben im Patientenservice: Termin = Tiefgrün, Folgerezept = Blattgrün,
+Überweisung = Espelkamp-Grün — zurückhaltend als obere Kante, Icon- und
+Nummernfarbe, nie als volle Kartenfläche.
 
 **Fokusring:** zwei Ringe, weil die Seite helle und tiefdunkle Flächen mischt.
 Petrol außen, Papier innen. Auf jedem Untergrund ist einer sichtbar.

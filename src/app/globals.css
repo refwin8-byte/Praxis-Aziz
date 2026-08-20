@@ -8,23 +8,41 @@
 --------------------------------------------------------------------------- */
 
 @theme {
-  --color-linen: #f4f1ec;
+  /* Richtung „Espelkamp Editorial" (August 2026): Die Grünfamilie ist der
+     lokale Markenanker. Die Tokennamen bleiben aus Stabilitätsgründen
+     erhalten, ihre ROLLEN sind:
+
+       night       = Tiefgrün-Petrol  — Nav, Footer, Primäraktion
+       wald        = Waldgrün         — große Markenflächen, Kapitel
+       petrol      = Espelkamp-Grün   — lebendiger Hauptakzent auf Hell
+       sage        = Blattgrün        — Linien, Icons, Grafik auf Dunkel
+       sage-bright = helles Blatt     — kleiner Text auf wald/night-soft
+       salbei      = helles Salbei    — ruhige Serviceflächen
+       ocker       = warmes Ocker     — NUR Nummern, Linien, ein Punkt
+                                        pro Viewport; nie Textfarbe
+
+     Gemessene Kontraste (WCAG AA): Weiß auf night 14,6:1 · Weiß auf wald
+     8,9:1 · petrol auf linen 4,76:1 (Text ok) · sage-bright auf wald
+     6,4:1 · sage auf night 5,4:1 (nur große Schrift auf wald: 3,7:1) ·
+     ink auf salbei 12,4:1. Ocker ist von der Textprüfung ausgenommen,
+     weil es nie Text trägt. */
+  --color-linen: #f4f1ea;
   --color-paper: #fcfaf7;
 
-  --color-night: #12262b;
-  --color-night-deep: #0b181c;
-  --color-night-soft: #1e3a40;
+  --color-night: #102f2d;
+  --color-night-deep: #0a2220;
+  --color-night-soft: #1d5244;
+  --color-wald: #174b3a;
 
-  --color-sage: #7fa08c;
-  /* Aufgehellte Variante für kleinen Text auf --night-soft. Salbei selbst
-     erreicht dort nur 4.21:1 und fällt damit durch WCAG AA. Im Browser
-     nachgemessen: 4.80:1 auf --night-soft, 8.25:1 auf --night. */
-  --color-sage-bright: #a8c4b2;
-  --color-petrol: #2c6a6e;
+  --color-sage: #82a96e;
+  --color-sage-bright: #bed3c2;
+  --color-salbei: #dce7d8;
+  --color-petrol: #3f7657;
+  --color-ocker: #d4b35f;
 
-  --color-ink: #14201f;
-  --color-ink-soft: #55605e;
-  --color-rule: #dfd9d0;
+  --color-ink: #16211c;
+  --color-ink-soft: #56615b;
+  --color-rule: #ddd8cc;
 
   --color-open: #2a6b45;
   --color-alert: #a8321f;
@@ -160,6 +178,59 @@
     mask-repeat: no-repeat;
     -webkit-mask-position: center;
     mask-position: center;
+  }
+
+  /* --- Aziz-Signatur -----------------------------------------------------
+     Vier Elemente, sparsam eingesetzt (höchstens ein bis zwei pro Seite):
+     Riesennummer, AZ-Kreis, angeschnittene AZ-Letter, Ockerfaden. Sie
+     wirken als Markensystem, nicht als Dekoration. */
+
+  /* Übergroße redaktionelle Abschnittsnummer. Farbe kommt vom Kontext
+     (ocker auf Hell, sage-bright auf Dunkel). Immer aria-hidden setzen,
+     wenn die Nummer rein grafisch ist. */
+  .nr-gross {
+    font-family: var(--font-serif);
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Kreis aus dem AZ-Monogramm als ruhige grafische Ebene. Als leerer
+     absolut positionierter div einsetzen, aria-hidden. */
+  .az-kreis {
+    border: 1.5px solid var(--color-sage);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* Angeschnittene AZ-Letter als Hintergrundtypografie, sehr leise.
+     Der Container braucht position:relative und overflow:hidden. */
+  .az-letter {
+    position: absolute;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-sage);
+    opacity: 0.14;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Der Ockerfaden: ein kurzes Markensignal. Höchstens einer pro
+     Viewport, nie als Textfarbe. */
+  .faden {
+    height: 2px;
+    width: 5.5rem;
+    background: var(--color-ocker);
+  }
+
+  /* Natürlicher Foto-Grade für Raumaufnahmen: nur eine Spur wärmer und
+     leiser in der Sättigung. Bewusst OHNE Farbton-Drehung — ein grüner
+     Stich würde die echten Materialien der Praxis verfälschen (der Tresen
+     ist Eiche, kein Oliv). Nie auf Porträts anwenden. */
+  .grade {
+    filter: sepia(0.04) saturate(0.96) brightness(1.01);
   }
 
   /* Zustandsfeedback auf Tap. Kurz, sonst fühlt es sich träge an. */

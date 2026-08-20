@@ -25,13 +25,13 @@ function HeroBild() {
         asset={praxisLoop}
         alt={alt}
         priority
-        className="rounded-lg"
+        className="grade rounded-lg"
         sizes="(min-width: 1024px) 38vw, 100vw"
       />
     );
   }
   return (
-    <div className="relative aspect-4/5 overflow-hidden rounded-lg bg-rule/40">
+    <div className="grade relative aspect-4/5 overflow-hidden rounded-lg bg-rule/40">
       <Image
         src="/bilder/praxis-wartebereich.webp"
         alt={alt}
@@ -58,7 +58,8 @@ export default function Praxis() {
               Eine Hausarztpraxis mitten in Espelkamp, in der die meisten
               Untersuchungen im Haus stattfinden.
             </p>
-            <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-2 border-t border-rule pt-5 text-[0.9375rem] font-semibold text-night">
+            <div className="faden mt-8" aria-hidden="true" />
+            <ul className="mt-5 flex flex-wrap gap-x-7 gap-y-2 text-[0.9375rem] font-semibold text-night">
               {["Zwei Ärzte", "Drei Schwerpunkte", "Diagnostik im Haus"].map((f) => (
                 <li key={f} className="flex items-center gap-2.5">
                   <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-petrol" />
@@ -141,9 +142,10 @@ export default function Praxis() {
         </div>
       </section>
 
-      {/* Ärzte. Für Dennis Aziz existiert kein Foto, deshalb steht er rein
-          typografisch. Ein generiertes Gesicht wäre eine Fälschung. */}
-      <section className="border-b border-rule" aria-labelledby="aerzte">
+      {/* Ärzte auf warmem Salbeigrund — der menschlichste Abschnitt der
+          Website bekommt die weichste Fläche. Beide Porträts sind echte,
+          gelieferte Aufnahmen; ein generiertes Gesicht wäre eine Fälschung. */}
+      <section className="bg-salbei" aria-labelledby="aerzte">
         <div className="container-page section">
           <h2 id="aerzte" className="h2 text-night">
             Ärzte

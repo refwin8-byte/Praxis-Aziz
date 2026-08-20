@@ -45,12 +45,17 @@ export function AnfrageAktionen() {
   return (
     <div className="mt-14">
       <ul className="rule-list border-t border-white/15">
-        {wege.map((w) => (
+        {wege.map((w, i) => (
           <li key={w.titel} className="border-white/15">
             <Link
               href={w.href}
               className="press group flex min-h-14 flex-col gap-4 py-7 sm:flex-row sm:items-center sm:gap-8"
             >
+              {/* Übergroße redaktionelle Nummer — die Aziz-Signatur dieser
+                  Sektion. Rein grafisch, deshalb aria-hidden. */}
+              <span aria-hidden="true" className="nr-gross num hidden w-20 shrink-0 text-sage-bright/70 sm:block">
+                0{i + 1}
+              </span>
               <w.Icon size={26} className="shrink-0 text-sage" />
               <span className="flex-1">
                 <span className="block text-[1.3125rem] font-semibold">{w.titel}</span>
@@ -66,6 +71,7 @@ export function AnfrageAktionen() {
 
         <li className="border-white/15">
           <div className="flex min-h-14 flex-col gap-4 py-7 sm:flex-row sm:items-center sm:gap-8">
+            <span aria-hidden="true" className="hidden w-20 shrink-0 sm:block" />
             <Telefon size={26} className="shrink-0 text-sage" />
             <span className="flex-1">
               <span className="block text-[1.3125rem] font-semibold">

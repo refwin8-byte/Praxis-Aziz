@@ -87,8 +87,11 @@ export default function Leistungen() {
           linke Spalte auf großen Displays. */}
       <section id="diagnostik" className="container-page py-16 lg:py-24" aria-labelledby="diagnostik-t">
         <Reveal>
-          <div className="linie h-0.5 w-24 bg-night" aria-hidden="true" />
-          <div className="mt-8 grid gap-6 lg:grid-cols-[5fr_7fr] lg:gap-16">
+          <div className="flex items-end gap-5">
+            <span aria-hidden="true" className="nr-gross num text-ocker">01</span>
+            <div className="linie mb-2 h-0.5 w-24 bg-night" aria-hidden="true" />
+          </div>
+          <div className="mt-6 grid gap-6 lg:grid-cols-[5fr_7fr] lg:gap-16">
             <h2 id="diagnostik-t" className="h2 text-night">
               {diagnostik.titel}
             </h2>
@@ -106,12 +109,13 @@ export default function Leistungen() {
 
       {/* 2 — Chronische Erkrankungen als Petrol-Fläche: der Rhythmuswechsel
           der Seite. Salbei trägt die Akzente auf Dunkel. */}
-      <section id="chronisch" className="bg-night text-white" aria-labelledby="chronisch-t">
+      <section id="chronisch" className="bg-wald text-white" aria-labelledby="chronisch-t">
         <div className="container-page py-16 lg:py-24">
           <Reveal>
             <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
               <div>
-                <p className="label text-sage-bright">Langfristige Begleitung</p>
+                <span aria-hidden="true" className="nr-gross num text-sage-bright/70">02</span>
+                <p className="label mt-4 text-sage-bright">Langfristige Begleitung</p>
                 <h2 id="chronisch-t" className="h2 mt-4">
                   {chronisch.titel}
                 </h2>
@@ -137,9 +141,12 @@ export default function Leistungen() {
         <div className="container-page py-16 lg:py-24">
           <Reveal>
             <div className="grid gap-6 lg:grid-cols-[5fr_7fr] lg:gap-16">
-              <h2 id="weitere-t" className="h2 text-night">
-                {weitere.titel}
-              </h2>
+              <div>
+                <span aria-hidden="true" className="nr-gross num text-petrol/60">03</span>
+                <h2 id="weitere-t" className="h2 mt-2 text-night">
+                  {weitere.titel}
+                </h2>
+              </div>
               <p className="text-[1.1875rem] leading-relaxed lg:pt-2">{weitere.text}</p>
             </div>
             <ul className="mt-10 grid gap-x-14 border-t border-rule sm:grid-cols-2">

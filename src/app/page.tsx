@@ -91,8 +91,9 @@ export default function Startseite() {
             )}
           </div>
 
+          <div className="enter faden mt-8" style={{ "--d": "220ms" } as React.CSSProperties} aria-hidden="true" />
           <div
-            className="enter mt-8 border-t border-rule pt-6"
+            className="enter mt-5"
             style={{ "--d": "240ms" } as React.CSSProperties}
           >
             <Oeffnungsstatus className="text-[1.0625rem]" />
@@ -104,7 +105,15 @@ export default function Startseite() {
           </div>
         </div>
 
-        <div className="bild-auftakt relative aspect-4/5 overflow-hidden rounded-lg bg-rule/40 lg:aspect-3/4">
+        {/* Das Foto steht selbstbewusster: Es ragt unten aus dem Hero in das
+            Waldgrün-Panel hinein, dahinter liegt der AZ-Kreis als ruhige
+            grafische Ebene. Keine Aktion wird davon verdeckt. */}
+        <div className="relative lg:-mb-20">
+          <div
+            aria-hidden="true"
+            className="az-kreis absolute -top-10 -right-14 hidden h-56 w-56 opacity-60 lg:block"
+          />
+          <div className="bild-auftakt grade relative z-10 aspect-4/5 overflow-hidden rounded-lg bg-rule/40 shadow-[0_18px_44px_-28px_rgba(16,47,45,0.55)] lg:aspect-3/4">
           {heroLoop ? (
             <PraxisVideo
               asset={heroLoop}
@@ -123,17 +132,20 @@ export default function Startseite() {
               className="object-cover"
             />
           )}
+          </div>
         </div>
       </section>
 
-      {/* 2 — Die drei Aktionen. Auf Nachtgrund, weil sie das Ziel der Seite
-          sind. Haarlinien statt drei gleicher Karten. */}
-      <section className="bg-night text-white" aria-labelledby="erledigen">
-        <div className="container-page section">
-          <h2 id="erledigen" className="h2 max-w-2xl">
+      {/* 2 — Die drei Aktionen als Waldgrün-Kapitel. Der Hero endet nicht
+          auf einer Linie: Das Foto ragt von oben herein, der Ockerfaden
+          führt aus dem Hero in die Fläche. */}
+      <section className="bg-wald text-white" aria-labelledby="erledigen">
+        <div className="container-page section relative">
+          <div aria-hidden="true" className="absolute left-[clamp(1.25rem,5vw,3.5rem)] top-0 h-10 w-0.5 bg-ocker" />
+          <h2 id="erledigen" className="h2 max-w-2xl pt-4">
             Termin, Rezept und Überweisung
           </h2>
-          <p className="mt-5 max-w-2xl text-white/75">
+          <p className="mt-5 max-w-2xl text-white/80">
             Drei Anliegen, drei Wege. Damit es schnell geht, halten Sie bitte
             bereit, was bei jedem Weg steht.
           </p>
@@ -192,7 +204,7 @@ export default function Startseite() {
           kommen. Das Seitenverhältnis ist flach, damit es auf dem Handy
           nicht den halben Bildschirm frisst. */}
       <Reveal>
-        <div className="relative aspect-16/10 w-full overflow-hidden bg-rule/40 sm:aspect-21/9">
+        <div className="grade relative aspect-16/10 w-full overflow-hidden bg-rule/40 sm:aspect-21/9">
           <Image
             src="/bilder/praxis-wartebereich.webp"
             alt="Blick in den Wartebereich der Praxis mit Sitzreihen, Zeitschriftenregal und Fenster zum Grünen"

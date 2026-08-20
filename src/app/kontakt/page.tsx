@@ -54,7 +54,7 @@ export default function Kontakt() {
           <div>
             <a href="#anfahrt-karte" className="press block" aria-label="Zur großen Karte springen">
               <Reveal className="reveal-bild">
-                <div className="relative aspect-16/10 overflow-hidden rounded-lg border border-rule bg-rule/40">
+                <div className="relative aspect-16/10 overflow-hidden rounded-lg border-2 border-petrol/50 bg-rule/40">
                   <Image
                     src="/bilder/karte-praxis.webp"
                     alt="Kartenausschnitt von Espelkamp mit Markierung der Praxis in der Ostlandstraße 17"

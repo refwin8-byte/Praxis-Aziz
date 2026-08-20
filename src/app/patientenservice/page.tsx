@@ -21,6 +21,12 @@ export const metadata: Metadata = {
 export default function Patientenservice() {
   const buchung = terminBuchung();
 
+  /**
+   * Wegfarben-Logik: Jeder Weg hat eine feste Farbe aus der Grünfamilie —
+   * zurückhaltend als obere Kante, Icon- und Nummernfarbe, nie als volle
+   * Kartenfläche. Termin = Tiefgrün (zentrale Aktion), Folgerezept =
+   * Blattgrün (ruhiger Service), Überweisung = Espelkamp-Grün.
+   */
   const wege = [
     {
       Icon: Kalender,
@@ -30,6 +36,8 @@ export default function Patientenservice() {
         ? `Online über ${buchung.anbieter} oder telefonisch. Halten Sie Ihre Versichertenkarte bereit.`
         : "Termine vereinbaren wir telefonisch. Halten Sie Ihre Versichertenkarte bereit.",
       aktion: buchung ? "Termin buchen" : "Zum Terminweg",
+      kante: "bg-night",
+      farbe: "text-night",
     },
     {
       Icon: Rezept,
@@ -37,6 +45,8 @@ export default function Patientenservice() {
       href: "/patientenservice/rezept",
       text: "Für Medikamente, die Sie schon regelmäßig einnehmen. Halten Sie Name, Wirkstärke und Packungsgröße bereit.",
       aktion: "Rezept anfordern",
+      kante: "bg-sage",
+      farbe: "text-sage",
     },
     {
       Icon: Menschen,
@@ -44,6 +54,8 @@ export default function Patientenservice() {
       href: "/patientenservice/ueberweisung",
       text: "Für den Besuch bei einer Fachärztin oder einem Facharzt. Fachrichtung und Grund genügen.",
       aktion: "Überweisung anfordern",
+      kante: "bg-petrol",
+      farbe: "text-petrol",
     },
   ] as const;
 
@@ -70,8 +82,14 @@ export default function Patientenservice() {
         <div className="grid gap-8 lg:grid-cols-3">
           {wege.map((w, i) => (
             <Reveal key={w.titel} delay={i * 80} className="h-full">
-              <article className="flex h-full flex-col rounded-md border border-rule bg-paper p-8">
-                <w.Icon size={28} className="text-petrol" />
+              <article className="relative flex h-full flex-col overflow-hidden rounded-md border border-rule bg-paper p-8">
+                <span aria-hidden="true" className={`absolute inset-x-0 top-0 h-1 ${w.kante}`} />
+                <div className="flex items-start justify-between">
+                  <w.Icon size={28} className={w.farbe} />
+                  <span aria-hidden="true" className={`nr-gross num text-[1.6rem] opacity-60 ${w.farbe}`}>
+                    0{i + 1}
+                  </span>
+                </div>
                 <h2 className="mt-5 font-serif text-[1.625rem] font-normal text-night">{w.titel}</h2>
                 <p className="mt-3 flex-1 text-ink-soft">{w.text}</p>
                 <Link
