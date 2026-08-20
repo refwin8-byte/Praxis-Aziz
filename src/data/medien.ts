@@ -32,19 +32,19 @@ export type MotionAsset = {
  * Startseite, Hero rechts.
  *
  * Erzeugt per Image-to-Video (Seedance 2.0) aus dem echten Foto
- * praxis-anmeldung.webp. Aus der Generierung sind nur die ersten zwei
- * Sekunden verwendet — dort ist die Kamera dem Ausgangsfoto noch treu —
- * auf 1,75-fache Länge verlangsamt, per Bewegungsinterpolation auf
- * 30 fps geglättet und als Vor-und-zurück-Schleife geschnitten
- * (6,7 s, nahtlos). Der 4:5-Ausschnitt entspricht der Komposition des
- * Originalfotos; die vom Modell erfundenen 16:9-Ränder sind
- * weggeschnitten. Poster = erstes Frame. „v2" im Namen wegen des
- * Bild-Caches: Beim Austausch immer den Dateinamen ändern.
+ * praxis-anmeldung.webp — mit demselben Foto als Start- UND Endbild.
+ * Dadurch schließt die Schleife nativ: 8 s ruhiges Ein- und Ausatmen der
+ * Kamera in durchgehenden 24 fps, ohne nachträgliches Strecken oder
+ * Interpolieren (die Ursache des Ruckelns der ersten beiden Fassungen).
+ * Der 4:5-Ausschnitt entspricht der Komposition des Originalfotos; die
+ * vom Modell erfundenen 16:9-Ränder sind weggeschnitten. Poster =
+ * erstes Frame. „v3" im Namen wegen des Bild-Caches: Beim Austausch
+ * immer den Dateinamen ändern.
  */
 export const heroLoop: MotionAsset | null = {
-  webm: "/video/hero-loop-v2.webm",
-  mp4: "/video/hero-loop-v2.mp4",
-  poster: "/video/hero-loop-v2-poster.webp",
+  webm: "/video/hero-loop-v3.webm",
+  mp4: "/video/hero-loop-v3.mp4",
+  poster: "/video/hero-loop-v3-poster.webp",
   breite: 864,
   hoehe: 1080,
 };
