@@ -225,6 +225,19 @@ funktioniert es auf Leinen und auf Nachtgrund mit einer einzigen Datei.
 Für keinen der Ärzte wird ein generiertes oder gekauftes Gesicht verwendet.
 Läge für einen von beiden kein Foto vor, stünde er rein typografisch.
 
+Zwei präzise Ausnahmen vom Nur-echte-Fotos-Grundsatz, beide entschieden:
+
+- **Der Hero-Loop der Startseite** (`/video/hero-loop.*`) ist per
+  Image-to-Video aus dem echten Anmeldungsfoto erzeugt. Verwendet sind nur
+  die ersten zwei Sekunden der Generierung, in denen die Kamera dem Foto
+  treu bleibt, als nahtlose Vor-und-zurück-Schleife; die vom Modell
+  erfundenen Bildränder sind weggeschnitten. Räume und Gegenstände sind die
+  der echten Praxis.
+- **Das Diagnostik-Stillleben** (`diagnostik-detail.webp`, Leistungsseite)
+  ist generiert und zeigt ausschließlich unbeschriftete Gegenstände — kein
+  Raum, keine Menschen, keine lesbaren Daten. Es steht mit dem Vermerk
+  „Symbolbild" unter dem Bild. Generierte Räume oder Personen bleiben tabu.
+
 Keine Karte von Google. Die Karte auf der Kontaktseite kommt von
 OpenStreetMap und läuft über eine **Zwei-Klick-Lösung**: Vor der Zustimmung
 existiert kein iframe, kein Vorabruf, kein Preconnect — es fließt kein Byte

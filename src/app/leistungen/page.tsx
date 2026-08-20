@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { leistungen, praxis } from "@/data/praxis";
 import { leistungenLoop } from "@/data/medien";
@@ -31,25 +32,22 @@ function DiagnostikAnker() {
     );
   }
   return (
-    <div className="flex h-full flex-col justify-between rounded-lg bg-night p-8 text-white lg:p-10">
-      <p className="label text-sage-bright">Diagnostik im Haus</p>
-      <ul className="rule-list mt-6 border-t border-white/15">
-        {[
-          ["EKG", "auch als Langzeit-EKG über 24 Stunden"],
-          ["Ultraschall", "im hausärztlichen Rahmen"],
-          ["Lungenfunktion", "bei Atemwegsbeschwerden und Asthma"],
-          ["Labor", "Blutentnahme und HbA1c in der Praxis"],
-        ].map(([t, d]) => (
-          <li key={t} className="flex items-baseline justify-between gap-6 border-white/15 py-3.5">
-            <span className="font-semibold">{t}</span>
-            <span className="text-right text-[0.9375rem] text-white/70">{d}</span>
-          </li>
-        ))}
-      </ul>
-      <p className="mt-6 text-[0.9375rem] text-sage-bright">
-        Ohne zweiten Termin in einer anderen Stadt.
-      </p>
-    </div>
+    <figure>
+      <div className="relative aspect-16/10 overflow-hidden rounded-lg bg-rule/40">
+        <Image
+          src="/bilder/diagnostik-detail.webp"
+          alt="Stillleben mit EKG-Papier, dunklem Stethoskop und Blutdruckmanschette auf hellem Leinen"
+          fill
+          priority
+          sizes="(min-width: 1024px) 42vw, 100vw"
+          className="object-cover"
+        />
+      </div>
+      <figcaption className="mt-3 text-[0.875rem] text-ink-soft">
+        EKG, Blutdruck, Abhören — die Grundlagen finden hier im Haus statt.
+        (Symbolbild)
+      </figcaption>
+    </figure>
   );
 }
 
@@ -84,32 +82,32 @@ export default function Leistungen() {
         </div>
       </header>
 
-      {/* 1 — Diagnostik auf Leinen. */}
-      <section id="diagnostik" className="container-page section" aria-labelledby="diagnostik-t">
+      {/* 1 — Diagnostik auf Leinen. Überschrift und Einleitung als Zeile,
+          die Liste darunter zweispaltig über die volle Breite — keine leere
+          linke Spalte auf großen Displays. */}
+      <section id="diagnostik" className="container-page py-16 lg:py-24" aria-labelledby="diagnostik-t">
         <Reveal>
           <div className="linie h-0.5 w-24 bg-night" aria-hidden="true" />
-          <div className="mt-8 grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
+          <div className="mt-8 grid gap-6 lg:grid-cols-[5fr_7fr] lg:gap-16">
             <h2 id="diagnostik-t" className="h2 text-night">
               {diagnostik.titel}
             </h2>
-            <div>
-              <p className="text-[1.1875rem] leading-relaxed">{diagnostik.text}</p>
-              <ul className="mt-9 rule-list border-t border-rule">
-                {diagnostik.punkte.map((p) => (
-                  <li key={p} className="py-4 text-[1.0625rem]">
-                    {p}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[1.1875rem] leading-relaxed lg:pt-2">{diagnostik.text}</p>
           </div>
+          <ul className="mt-10 grid gap-x-14 border-t border-rule sm:grid-cols-2">
+            {diagnostik.punkte.map((p) => (
+              <li key={p} className="border-b border-rule py-4 text-[1.0625rem]">
+                {p}
+              </li>
+            ))}
+          </ul>
         </Reveal>
       </section>
 
       {/* 2 — Chronische Erkrankungen als Petrol-Fläche: der Rhythmuswechsel
           der Seite. Salbei trägt die Akzente auf Dunkel. */}
       <section id="chronisch" className="bg-night text-white" aria-labelledby="chronisch-t">
-        <div className="container-page section">
+        <div className="container-page py-16 lg:py-24">
           <Reveal>
             <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
               <div>
@@ -134,25 +132,23 @@ export default function Leistungen() {
         </div>
       </section>
 
-      {/* 3 — Weitere Leistungen auf Papier. */}
+      {/* 3 — Weitere Leistungen auf Papier, gleiche Struktur wie Diagnostik. */}
       <section id="weitere" className="border-b border-rule bg-paper" aria-labelledby="weitere-t">
-        <div className="container-page section">
+        <div className="container-page py-16 lg:py-24">
           <Reveal>
-            <div className="grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
+            <div className="grid gap-6 lg:grid-cols-[5fr_7fr] lg:gap-16">
               <h2 id="weitere-t" className="h2 text-night">
                 {weitere.titel}
               </h2>
-              <div>
-                <p className="text-[1.1875rem] leading-relaxed">{weitere.text}</p>
-                <ul className="mt-9 rule-list border-t border-rule">
-                  {weitere.punkte.map((p) => (
-                    <li key={p} className="py-4 text-[1.0625rem]">
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <p className="text-[1.1875rem] leading-relaxed lg:pt-2">{weitere.text}</p>
             </div>
+            <ul className="mt-10 grid gap-x-14 border-t border-rule sm:grid-cols-2">
+              {weitere.punkte.map((p) => (
+                <li key={p} className="border-b border-rule py-4 text-[1.0625rem]">
+                  {p}
+                </li>
+              ))}
+            </ul>
           </Reveal>
         </div>
       </section>
