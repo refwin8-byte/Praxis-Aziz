@@ -11,8 +11,9 @@ import { status, type Status } from "@/lib/oeffnungszeiten";
  * und damit falsch. Bis der Wert steht, hält ein Platzhalter exakt dieselbe
  * Höhe, damit nichts springt.
  *
- * Feiertage kennt die Berechnung nicht. Deshalb steht daneben immer die
- * Telefonnummer, und der Text sagt „nach Plan", nicht „garantiert".
+ * Die Berechnung kennt NRW-Feiertage und eingetragene Urlaubszeiten. Was sie
+ * nicht kennen kann — kurzfristige Schließungen —, fängt der Kontext ab:
+ * Daneben steht immer die Telefonnummer, und der Text macht keine Zusage.
  */
 export function Oeffnungsstatus({ className = "" }: { className?: string }) {
   const [s, setS] = useState<Status | null>(null);
@@ -49,9 +50,11 @@ export function Oeffnungsstatus({ className = "" }: { className?: string }) {
         </span>
       ) : (
         <span className="text-ink-soft">
+          {s.heute === "feiertag" && "Heute Feiertag. "}
+          {s.heute === "urlaub" && "Die Praxis ist derzeit geschlossen. "}
           {s.naechster ? (
             <>
-              Geschlossen, wieder {s.naechster.tag} ab{" "}
+              {s.heute ? "Wieder" : "Geschlossen, wieder"} {s.naechster.tag} ab{" "}
               <span className="num">{s.naechster.von}</span> Uhr
             </>
           ) : (

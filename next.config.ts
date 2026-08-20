@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
       { source: "/ueber-uns", destination: "/praxis", permanent: true },
       { source: "/datenschutzerklaerung", destination: "/datenschutz", permanent: true },
       { source: "/startseite", destination: "/", permanent: true },
+      // Die frühere gemeinsame Formularseite ist in den Patientenservice
+      // aufgegangen. Der Pfad war bereits deployt und darf nicht brechen.
+      { source: "/rezept-und-ueberweisung", destination: "/patientenservice", permanent: true },
     ];
   },
 

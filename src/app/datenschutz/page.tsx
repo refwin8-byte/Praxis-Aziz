@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { praxis, anfrageZiel } from "@/data/praxis";
+import { praxis } from "@/data/praxis";
+import { terminBuchung } from "@/lib/termin";
 import { SeitenKopf } from "@/components/seiten-kopf";
 import { EinwilligungSchalter } from "@/components/einwilligung-schalter";
 
@@ -160,18 +161,18 @@ export default function Datenschutz() {
             </p>
           </Block>
 
-          {anfrageZiel.aktiv && (
-            <Block titel="Rezept- und Überweisungsanfragen">
+          {terminBuchung() && (
+            <Block titel="Online-Terminbuchung">
               <p>
-                Die Schaltflächen für Rezept- und Überweisungsanfragen führen
-                auf ein Formular, das nicht auf dieser Website liegt, sondern
-                auf der bisherigen Website der Praxis. Erst dort geben Sie Daten
-                ein.
+                Die Schaltfläche „Termin buchen" führt zu{" "}
+                {terminBuchung()!.anbieter}, einem externen Anbieter für
+                Arzttermine. Erst dort geben Sie Daten ein; diese Website
+                überträgt beim Klick keine Daten über Sie an den Anbieter.
               </p>
               <p>
-                Diese Website erhebt, speichert und übermittelt dabei selbst
-                keine Gesundheitsdaten. Für die Verarbeitung im Formular gilt
-                die Datenschutzerklärung der dortigen Website.
+                Für die Verarbeitung beim Anbieter gilt dessen
+                Datenschutzerklärung. Termine können Sie jederzeit auch
+                telefonisch vereinbaren.
               </p>
             </Block>
           )}

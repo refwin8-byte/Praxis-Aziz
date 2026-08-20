@@ -62,12 +62,12 @@ export default function Leistungen() {
 
           <p className="mt-10 text-[0.9375rem] text-ink-soft">
             Rezept oder Überweisung brauchen Sie nicht telefonisch anzufragen.
-            Beides geht{" "}
+            Beides geht über den{" "}
             <Link
-              href="/rezept-und-ueberweisung"
+              href="/patientenservice"
               className="font-medium text-petrol underline underline-offset-2"
             >
-              schriftlich
+              Patientenservice
             </Link>
             .
           </p>

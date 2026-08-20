@@ -7,7 +7,16 @@
  * Wichtig: Verzeichnisse wie arzt-auskunft.de nennen abweichende Zeiten. Bis
  * die Praxis das bestätigt, gilt die eigene Website als Quelle. Falsche
  * Sprechzeiten schicken Menschen vor eine verschlossene Tür.
+ *
+ * Der Status berücksichtigt gesetzliche Feiertage in NRW (berechnet, keine
+ * Pflege nötig) und eingetragene Urlaubszeiten aus praxis.ts. Was er nicht
+ * kennen kann — kurzfristige Schließungen, Fortbildungen —, fängt die
+ * Formulierung ab: Neben dem Status steht immer die Telefonnummer, und der
+ * Text macht keine Zusage.
  */
+
+import { istFeiertagNRW } from "@/lib/feiertage";
+import { urlaube } from "@/data/praxis";
 
 export type Zeitraum = { von: string; bis: string };
 
@@ -54,40 +63,84 @@ const alsMinuten = (hhmm: string) => {
   return h * 60 + m;
 };
 
+/** „YYYY-MM-DD" als lokales Datum. `new Date("YYYY-MM-DD")` wäre UTC und
+ *  verschöbe den Tag je nach Zeitzone — bei Urlaubsgrenzen ein echter Fehler. */
+const alsLokalesDatum = (iso: string) => {
+  const [j, m, t] = iso.split("-").map(Number);
+  return new Date(j, m - 1, t);
+};
+
+/** Liegt der Tag in einem eingetragenen Urlaub? Grenzen einschließlich. */
+export function istUrlaub(datum: Date): { grund?: string } | null {
+  const tag = new Date(datum.getFullYear(), datum.getMonth(), datum.getDate());
+  for (const u of urlaube) {
+    if (tag >= alsLokalesDatum(u.von) && tag <= alsLokalesDatum(u.bis)) {
+      return { grund: u.grund };
+    }
+  }
+  return null;
+}
+
 export type Status =
   | { offen: true; bis: string }
-  | { offen: false; naechster: { tag: string; von: string } | null };
+  | {
+      offen: false;
+      /** Warum heute zu ist, wenn es nicht schlicht außerhalb der Zeiten liegt. */
+      heute?: "feiertag" | "urlaub";
+      naechster: { tag: string; von: string } | null;
+    };
+
+/** Hat die Praxis an diesem Tag nach Plan geöffnet? */
+function tagGeschlossen(datum: Date): "feiertag" | "urlaub" | null {
+  if (istFeiertagNRW(datum)) return "feiertag";
+  if (istUrlaub(datum)) return "urlaub";
+  return null;
+}
 
 /**
  * Berechnet den Status zu einem Zeitpunkt.
  *
  * Bewusst ohne Zeitzonen-Bibliothek: Der Wert wird im Browser der Patientin
  * berechnet, und wer vor der Tür steht, hat die lokale Uhrzeit des Geräts.
- * Feiertage kennt diese Funktion nicht — deshalb steht neben dem Status
- * immer die Telefonnummer und nie eine Zusage.
  */
 export function status(jetzt: Date = new Date()): Status {
   const tag = (jetzt.getDay() + 6) % 7; // Mo = 0
   const min = jetzt.getHours() * 60 + jetzt.getMinutes();
+  const heuteZu = tagGeschlossen(jetzt);
 
-  for (const z of sprechzeiten[tag]) {
-    if (min >= alsMinuten(z.von) && min < alsMinuten(z.bis)) {
-      return { offen: true, bis: z.bis };
+  if (!heuteZu) {
+    for (const z of sprechzeiten[tag]) {
+      if (min >= alsMinuten(z.von) && min < alsMinuten(z.bis)) {
+        return { offen: true, bis: z.bis };
+      }
     }
   }
 
-  // Nächste Öffnung suchen, heute zuerst, dann bis zu sieben Tage weiter.
-  for (let d = 0; d < 8; d++) {
-    const i = (tag + d) % 7;
-    for (const z of sprechzeiten[i]) {
+  // Nächste Öffnung suchen: heute zuerst, dann bis zu 60 Tage weiter —
+  // genug, um auch über einen Praxisurlaub hinwegzusehen.
+  for (let d = 0; d < 60; d++) {
+    const datum = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + d);
+    if (tagGeschlossen(datum)) continue;
+    for (const z of sprechzeiten[(tag + d) % 7]) {
       if (d === 0 && min >= alsMinuten(z.von)) continue;
+      // Ab einer Woche Abstand reicht der Wochentag nicht mehr — „Montag"
+      // hieße sonst irgendein Montag. Dann steht das Datum dabei.
+      const name =
+        d === 0
+          ? "heute"
+          : d === 1
+            ? "morgen"
+            : d < 7
+              ? tagLang[(tag + d) % 7]
+              : `${tagLang[(tag + d) % 7]}, ${datum.getDate()}.${datum.getMonth() + 1}.`;
       return {
         offen: false,
-        naechster: { tag: d === 0 ? "heute" : d === 1 ? "morgen" : tagLang[i], von: z.von },
+        heute: heuteZu ?? undefined,
+        naechster: { tag: name, von: z.von },
       };
     }
   }
-  return { offen: false, naechster: null };
+  return { offen: false, heute: heuteZu ?? undefined, naechster: null };
 }
 
 /** Sprechzeiten für schema.org, damit Google sie ausspielen kann. */

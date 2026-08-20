@@ -8,9 +8,12 @@ import { AnfrageAktionen } from "@/components/anfrage-aktionen";
 import { Reveal } from "@/components/reveal";
 import { Zahlen } from "@/components/zahlen";
 import { Karte } from "@/components/karte";
+import { GoogleBewertung } from "@/components/google-bewertung";
+import { terminBuchung } from "@/lib/termin";
 
 export default function Startseite() {
   const zeiten = gruppierteZeiten();
+  const buchung = terminBuchung();
 
   return (
     <>
@@ -36,24 +39,54 @@ export default function Startseite() {
             Diagnostik im eigenen Haus.
           </p>
 
+          {/* Primäraktion je nach Ausbaustufe: Gibt es eine Onlinebuchung,
+              führt sie an — sonst ist das Telefon der schnellste Weg zum
+              Termin und steht vorn. Nie beides gleich laut. */}
           <div
-            className="enter mt-9 flex flex-col gap-4 sm:flex-row sm:items-center"
+            className="enter mt-9 flex flex-wrap items-center gap-4"
             style={{ "--d": "180ms" } as React.CSSProperties}
           >
-            <a
-              href={praxis.telefonHref}
-              className="press inline-flex min-h-14 items-center justify-center gap-3 rounded-md bg-night px-7 text-[1.125rem] font-semibold text-white transition-colors hover:bg-night-deep"
-            >
-              <Telefon size={20} />
-              <span className="num">{praxis.telefon}</span>
-            </a>
-            <Link
-              href="/rezept-und-ueberweisung"
-              className="press inline-flex min-h-14 items-center justify-center gap-2.5 rounded-md border border-night/25 px-7 text-[1.0625rem] font-semibold text-night transition-colors hover:border-night hover:bg-night/5"
-            >
-              Rezept anfordern
-              <Pfeil size={19} />
-            </Link>
+            {buchung ? (
+              <>
+                <Link
+                  href="/patientenservice/termin"
+                  className="press inline-flex min-h-14 items-center justify-center gap-2.5 rounded-md bg-night px-7 text-[1.125rem] font-semibold text-white transition-colors hover:bg-night-deep"
+                >
+                  Termin buchen
+                  <Pfeil size={19} />
+                </Link>
+                <Link
+                  href="/patientenservice/rezept"
+                  className="press inline-flex min-h-14 items-center justify-center gap-2.5 rounded-md border border-night/25 px-7 text-[1.0625rem] font-semibold text-night transition-colors hover:border-night hover:bg-night/5"
+                >
+                  Rezept anfordern
+                </Link>
+                <a
+                  href={praxis.telefonHref}
+                  className="press inline-flex min-h-14 items-center justify-center gap-2.5 px-2 text-[1.0625rem] font-semibold text-night underline-offset-4 hover:underline"
+                >
+                  <Telefon size={19} />
+                  <span className="num">{praxis.telefon}</span>
+                </a>
+              </>
+            ) : (
+              <>
+                <a
+                  href={praxis.telefonHref}
+                  className="press inline-flex min-h-14 items-center justify-center gap-3 rounded-md bg-night px-7 text-[1.125rem] font-semibold text-white transition-colors hover:bg-night-deep"
+                >
+                  <Telefon size={20} />
+                  <span className="num">{praxis.telefon}</span>
+                </a>
+                <Link
+                  href="/patientenservice/rezept"
+                  className="press inline-flex min-h-14 items-center justify-center gap-2.5 rounded-md border border-night/25 px-7 text-[1.0625rem] font-semibold text-night transition-colors hover:border-night hover:bg-night/5"
+                >
+                  Rezept anfordern
+                  <Pfeil size={19} />
+                </Link>
+              </>
+            )}
           </div>
 
           <div
@@ -62,8 +95,9 @@ export default function Startseite() {
           >
             <Oeffnungsstatus className="text-[1.0625rem]" />
             <p className="mt-2 text-[0.9375rem] text-ink-soft">
-              Termine vereinbaren wir telefonisch. Für die Sprechstunde bringen
-              Sie bitte Ihre Versichertenkarte mit.
+              {buchung
+                ? "Termine buchen Sie online oder telefonisch. Für die Sprechstunde bringen Sie bitte Ihre Versichertenkarte mit."
+                : "Termine vereinbaren wir telefonisch. Für die Sprechstunde bringen Sie bitte Ihre Versichertenkarte mit."}
             </p>
           </div>
         </div>
@@ -85,11 +119,11 @@ export default function Startseite() {
       <section className="bg-night text-white" aria-labelledby="erledigen">
         <div className="container-page section">
           <h2 id="erledigen" className="h2 max-w-2xl">
-            Rezept, Überweisung und Termine
+            Termin, Rezept und Überweisung
           </h2>
           <p className="mt-5 max-w-2xl text-white/75">
-            All das regeln wir telefonisch. Damit es schnell geht, halten Sie
-            bitte bereit, was hier steht.
+            Drei Anliegen, drei Wege. Damit es schnell geht, halten Sie bitte
+            bereit, was bei jedem Weg steht.
           </p>
 
           <AnfrageAktionen />
@@ -220,6 +254,13 @@ export default function Startseite() {
 
         <Reveal delay={80} className="mt-16">
           <Zahlen />
+        </Reveal>
+
+        {/* Die eine echte Fremdbewertung: der Google-Gesamtwert mit Link zur
+            Quelle. Kein Widget (Datenschutz), keine herausgegriffenen Zitate
+            (§ 11 HWG) — nur die überprüfbare Zahl. */}
+        <Reveal delay={120} className="mt-12">
+          <GoogleBewertung />
         </Reveal>
 
         {/* Haltungssatz statt Testimonial. Er stammt erkennbar von der

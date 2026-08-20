@@ -3,6 +3,7 @@
 import {
   pruefeRezept,
   pruefeUeberweisung,
+  leseMedikamente,
   istBot,
   type FormularZustand,
 } from "@/lib/anfrage-schema";
@@ -48,16 +49,22 @@ export async function rezeptAnfordern(
   }
 
   const name = feld(fd, "name");
+  const medikamente = leseMedikamente(fd).map(
+    (m, i) =>
+      `${i + 1}. ${m.name}` +
+      (m.staerke ? ` — ${m.staerke}` : "") +
+      (m.packung ? ` — Packungsgröße: ${m.packung}` : ""),
+  );
   const inhalt = [
-    "Rezeptanforderung über die Website",
+    "Rezeptanforderung über die Website (nur Folgeverordnung)",
     "",
     `Name: ${name}`,
     `Geburtsdatum: ${feld(fd, "geburtsdatum")}`,
     "",
-    "Medikament, Dosierung, Packungsgröße:",
-    feld(fd, "medikament"),
+    "Medikamente:",
+    ...medikamente,
     "",
-    `Abholung: ${feld(fd, "abholung") || "keine Angabe"}`,
+    `Gewünschter Weg: ${feld(fd, "abholung") || "keine Angabe"}`,
     fusszeile(fd),
   ].join("\n");
 
@@ -99,6 +106,8 @@ export async function ueberweisungAnfordern(
     "",
     "Grund oder geplante Untersuchung:",
     feld(fd, "grund"),
+    "",
+    `Behandelnde Facharztpraxis (falls angegeben): ${feld(fd, "facharztpraxis") || "keine Angabe"}`,
     fusszeile(fd),
   ].join("\n");
 

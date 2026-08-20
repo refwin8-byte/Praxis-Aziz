@@ -77,14 +77,58 @@ function pruefeGemeinsam(fd: FormData, fehler: Fehler) {
     fehler.einwilligung = "Ohne Ihre Einwilligung dürfen wir die Anfrage nicht bearbeiten.";
 }
 
+/** Bis zu drei Medikamente pro Anfrage. Wer mehr braucht, ruft besser an —
+ *  das steht so auch am Formular. */
+export const maxMedikamente = 3;
+
+export type Medikament = { name: string; staerke: string; packung: string };
+
+/** Liest die Medikamenten-Zeilen aus. Leere Zeilen fallen weg. */
+export function leseMedikamente(fd: FormData): Medikament[] {
+  const zeilen: Medikament[] = [];
+  for (let i = 1; i <= maxMedikamente; i++) {
+    const name = text(fd.get(`medikament-${i}-name`));
+    const staerke = text(fd.get(`medikament-${i}-staerke`));
+    const packung = text(fd.get(`medikament-${i}-packung`));
+    if (name || staerke || packung) zeilen.push({ name, staerke, packung });
+  }
+  return zeilen;
+}
+
 export function pruefeRezept(fd: FormData): Fehler {
   const fehler: Fehler = {};
   pruefeGemeinsam(fd, fehler);
 
-  const medikament = text(fd.get("medikament"));
-  if (!medikament) fehler.medikament = "Bitte nennen Sie Medikament, Dosierung und Packungsgröße.";
-  else if (medikament.length < 4) fehler.medikament = "Bitte machen Sie eine genauere Angabe.";
-  else if (zuLang(medikament, 1500)) fehler.medikament = "Bitte kürzen Sie die Eingabe.";
+  const erste = text(fd.get("medikament-1-name"));
+  if (!erste) {
+    fehler["medikament-1-name"] = "Bitte nennen Sie das Medikament, so wie es auf der Packung steht.";
+  } else if (erste.length < 3) {
+    fehler["medikament-1-name"] = "Bitte machen Sie eine genauere Angabe.";
+  }
+  if (!text(fd.get("medikament-1-staerke"))) {
+    fehler["medikament-1-staerke"] =
+      "Bitte geben Sie Wirkstärke oder Dosierung an, zum Beispiel 50 mg, 1-0-1.";
+  }
+
+  // Angefangene weitere Zeilen brauchen mindestens den Namen. Eine Zeile,
+  // in der nur „N2" steht, kann die Praxis niemandem zuordnen.
+  for (let i = 2; i <= maxMedikamente; i++) {
+    const name = text(fd.get(`medikament-${i}-name`));
+    const rest =
+      text(fd.get(`medikament-${i}-staerke`)) || text(fd.get(`medikament-${i}-packung`));
+    if (!name && rest) {
+      fehler[`medikament-${i}-name`] = "Bitte nennen Sie auch hier den Namen des Medikaments.";
+    }
+  }
+
+  // Längengrenzen über alle Zeilen.
+  for (let i = 1; i <= maxMedikamente; i++) {
+    for (const teil of ["name", "staerke", "packung"]) {
+      if (zuLang(text(fd.get(`medikament-${i}-${teil}`)), 200)) {
+        fehler[`medikament-${i}-${teil}`] = "Bitte kürzen Sie die Eingabe.";
+      }
+    }
+  }
 
   return fehler;
 }
@@ -101,6 +145,11 @@ export function pruefeUeberweisung(fd: FormData): Fehler {
   if (!grund) fehler.grund = "Bitte beschreiben Sie kurz den Grund.";
   else if (grund.length < 4) fehler.grund = "Bitte machen Sie eine genauere Angabe.";
   else if (zuLang(grund, 1500)) fehler.grund = "Bitte kürzen Sie die Eingabe.";
+
+  // Freiwillig: die Facharztpraxis, falls schon bekannt.
+  if (zuLang(text(fd.get("facharztpraxis")), 200)) {
+    fehler.facharztpraxis = "Bitte kürzen Sie die Eingabe.";
+  }
 
   return fehler;
 }
