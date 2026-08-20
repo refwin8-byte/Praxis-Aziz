@@ -17,9 +17,10 @@ Consent-Bibliothek (rund 150 Zeilen eigener Code). Alle Versionen gepinnt.
 
 ```bash
 npm install
-npm run dev        # http://localhost:3400
+npm run dev        # http://localhost:3000
 npm run build
 npm run typecheck
+npm test           # Vitest: Öffnungszeiten, NRW-Feiertage, Formularprüfung, Termin-Adapter
 ```
 
 ## Gemessene Werte
@@ -123,20 +124,19 @@ Die Formulare funktionieren erst, wenn `.env.local` gefüllt ist (Vorlage in
 Die derzeit hinterlegte Gmail-Adresse reicht dafür nicht: Für Patientendaten
 ist ein Freemail-Konto ohne AV-Vertrag nicht zulässig.
 
-## Formulare: bewusst nicht selbst gebaut
+## Patientenservice und Terminbuchung
 
-Rezept- und Überweisungsanfragen enthalten Gesundheitsdaten, also besondere
-Kategorien nach Art. 9 DSGVO. Diese Website verarbeitet davon **nichts**. Sie
-erklärt, was gebraucht wird, wie lange es dauert und was im Notfall gilt, und
-verlinkt dann sichtbar auf die bestehende Formularlösung der Praxis.
+Der Bereich `/patientenservice` bündelt fünf Unterseiten: Termin,
+Folgerezept, Überweisung, Hinweise für den Praxisbesuch und
+Notfallinformationen. Die alte Route `/rezept-und-ueberweisung` leitet
+dauerhaft dorthin um.
 
-Dass dabei die Website gewechselt wird, steht sichtbar dabei. Ein
-unbemerkter Anbieterwechsel mitten in einer Anfrage mit Gesundheitsdaten wäre
-nicht zumutbar.
-
-Gesteuert wird das an genau einer Stelle: `anfrageZiel` in
-`src/data/praxis.ts`. Steht `aktiv` dort auf `false`, zeigt die Seite
-automatisch den Telefonweg statt der Buttons.
+Die Terminbuchung ist ein Anbieter-Adapter (`src/lib/termin.ts`), gesteuert
+über `APPOINTMENT_PROVIDER_URL` und `APPOINTMENT_PROVIDER_NAME`: Ohne
+vollständige Konfiguration existiert auf der ganzen Website kein „Termin
+buchen"-Button, es gilt der Telefonweg. Der Anbieter steht sichtbar an
+jedem Buchungslink, es gibt keine eigene Terminverwaltung und keine
+Speicherung.
 
 ## Vor dem Launch zwingend erledigen
 
@@ -158,10 +158,13 @@ automatisch den Telefonweg statt der Buttons.
    nicht online gehen; sie stehen alle in `praxisZahlen` in
    `src/data/praxis.ts` und lassen sich dort in einem Zug entfernen.
 
-1. **Postfach und AV-Vertrag für die Formulare.** Ohne gefüllte `.env.local`
-   sendet die Website nichts und verweist aufs Telefon. Nötig sind ein
-   Postfach auf eigener Domain und ein Auftragsverarbeitungsvertrag mit dem
-   E-Mail-Anbieter. Details oben unter „Online-Anforderung".
+1. **Postfach und AV-Vertrag für die Formulare.** Entschieden ist: Die
+   Praxis bekommt ein Postfach auf eigener Domain als Formularempfänger.
+   Einzurichten bleiben das Postfach selbst, der
+   Auftragsverarbeitungsvertrag mit dem E-Mail-Anbieter und die
+   SMTP-Zugangsdaten in `.env.local` bzw. den Vercel-Umgebungsvariablen.
+   Bis dahin sendet die Website nichts und verweist aufs Telefon. Details
+   oben unter „Online-Anforderung".
 2. **Impressum ergänzen.** Berufshaftpflichtversicherung mit Versicherer und
    räumlichem Geltungsbereich ist Pflichtangabe und steht derzeit als offener
    Punkt.
@@ -177,10 +180,16 @@ automatisch den Telefonweg statt der Buttons.
    Wochenenden nicht haltbar ist. Die Praxis muss der Abweichung zustimmen.
 6. **Nutzungsrechte an den Fotos klären.** Sie zeigen die echte Praxis, das
    Urheberrecht liegt aber beim Fotografen.
-7. **E-Mail-Adresse prüfen.** Verwendet wird `arztpraxis.dr.aziz@gmail.com`
-   von der Bestandsseite. Eine Gmail-Adresse ohne
-   Auftragsverarbeitungsvertrag ist für eine Arztpraxis heikel; ein Postfach
-   auf eigener Domain wäre der saubere Weg.
+7. **E-Mail-Adresse prüfen.** Als Kontaktadresse steht noch
+   `arztpraxis.dr.aziz@gmail.com` von der Bestandsseite auf der Website.
+   Sobald das Postfach auf eigener Domain existiert (Punkt 1), sollte es
+   auch die Kontaktadresse ersetzen. Formularempfänger ist Gmail in keinem
+   Fall — der kommt ausschließlich aus `ANFRAGE_EMPFAENGER`.
+8. **Google-Bewertung verifizieren.** Der Wert in `googleBewertung`
+   (`src/data/praxis.ts`) stammt aus einem Branchenverzeichnis aus zweiter
+   Hand. Vor Livegang direkt am Google-Unternehmensprofil ablesen,
+   eintragen und danach regelmäßig aktualisieren — oder auf `null` setzen,
+   dann verschwindet der Block.
 
 ## Beim Kunden anfragen
 

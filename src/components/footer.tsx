@@ -79,9 +79,13 @@ export function Footer() {
           <ul className="mt-5 space-y-1 text-white/85">
             {[
               { href: "/leistungen", label: "Leistungen" },
-              { href: "/praxis", label: "Praxis" },
-              { href: "/rezept-und-ueberweisung", label: "Rezept & Überweisung" },
-              { href: "/kontakt", label: "Kontakt" },
+              { href: "/praxis", label: "Praxis & Team" },
+              { href: "/patientenservice", label: "Patientenservice" },
+              { href: "/patientenservice/termin", label: "Termin" },
+              { href: "/patientenservice/rezept", label: "Folgerezept" },
+              { href: "/patientenservice/ueberweisung", label: "Überweisung" },
+              { href: "/patientenservice/notfall", label: "Notfallinformationen" },
+              { href: "/kontakt", label: "Kontakt & Anfahrt" },
             ].map((l) => (
               <li key={l.href}>
                 <Link
@@ -106,6 +110,14 @@ export function Footer() {
                 className="inline-flex min-h-12 items-center underline-offset-4 hover:underline"
               >
                 Datenschutz
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/barrierefreiheit"
+                className="inline-flex min-h-12 items-center underline-offset-4 hover:underline"
+              >
+                Barrierefreiheit
               </Link>
             </li>
           </ul>

@@ -58,16 +58,27 @@ beide mit Hinweis auf 24 Stunden Bearbeitungszeit.
 - **Das Hero-Bild mit eingebranntem Text.** Text im Bild ist nicht vorlesbar,
   nicht übersetzbar und wird auf kleinen Displays unlesbar.
 
-## Formulare: bewusste Einschränkung
+## Formulare: entschieden
 
 Rezept- und Überweisungsanfragen enthalten Gesundheitsdaten, also besondere
-Kategorien nach Art. 9 DSGVO. Diese Seite baut dafür **keine eigene
-Verarbeitung**. Sie verlinkt sichtbar auf die bestehende, bereits im Betrieb
-befindliche Formularlösung der Praxis und erklärt vorher, was gebraucht wird,
-wie lange es dauert und was im Notfall gilt.
+Kategorien nach Art. 9 DSGVO. **Entschieden (August 2026):** Die Website
+stellt eigene Formulare unter /patientenservice bereit. Die Angaben gehen
+per Server Action und TLS-erzwungenem SMTP an ein **Praxispostfach auf
+eigener Domain** (mit AV-Vertrag); auf der Website wird nichts gespeichert.
+Ohne konfiguriertes Postfach senden die Formulare nichts und verweisen
+sichtbar auf den Telefonweg. Das Gmail-Postfach der Bestandsseite bleibt
+reine Kontaktadresse und ist nie Formularempfänger.
 
-Das ist eine Übergangslösung, kein Endzustand. Der Endzustand gehört in
-README.md unter „Vor dem Launch".
+## Patientenservice und Terminweg
+
+Die Navigation führt einen eigenen Bereich /patientenservice mit fünf
+Unterseiten: Termin, Folgerezept, Überweisung, Hinweise für den
+Praxisbesuch, Notfallinformationen. Die Terminbuchung ist ein Adapter über
+Umgebungsvariablen (src/lib/termin.ts): Erst wenn die Praxis einen Vertrag
+mit einem Anbieter hat, erscheint „Termin buchen" — bis dahin gilt der
+Telefonweg. Der Google-Bewertungswert im Vertrauensbereich stammt aus
+`googleBewertung` in praxis.ts und muss vor Livegang direkt am
+Google-Unternehmensprofil verifiziert werden.
 
 ## Offen, muss die Praxis klären
 

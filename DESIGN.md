@@ -240,9 +240,13 @@ Zustimmung einholen, für die es nichts einzuwilligen gibt.
 
 - Kein Hellblau, kein Verlaufshintergrund, kein Blob, kein Glow.
 - Keine Stockfotos. Keine generierten Gesichter.
-- Keine erfundenen Zahlen: keine Patientenzahlen, keine Bewertungen,
-  keine Sterne, keine Auszeichnungen. (§ 11 HWG)
-- Kein „Termin buchen"-Button, solange es keine Onlinebuchung gibt.
+- Keine erfundenen Zahlen und keine erfundenen Bewertungen. (§ 11 HWG)
+  Die eine Ausnahme vom Sterne-Verbot: der Google-Gesamtwert im
+  Vertrauensbereich — eine echte, verlinkte, überprüfbare Fremdbewertung
+  mit sichtbarem Stand. Kein Widget, keine herausgegriffenen Zitate.
+- Kein „Termin buchen"-Button ohne echte Onlinebuchung. Der Button
+  existiert nur, wenn `APPOINTMENT_PROVIDER_URL` konfiguriert ist
+  (src/lib/termin.ts); sonst ist das Telefon die Primäraktion.
 - Kein `transition: all`.
 - Keine Eyebrow über jeder Sektion. Höchstens eine pro drei Sektionen.
 - Keine eigene Verarbeitung von Gesundheitsdaten.
