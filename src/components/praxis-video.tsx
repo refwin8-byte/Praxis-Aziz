@@ -14,10 +14,16 @@ import type { MotionAsset } from "@/data/medien";
  * Das Video wird überhaupt nur angefasst, wenn alle Bedingungen stimmen:
  * - kein prefers-reduced-motion (dann bleibt das Standbild)
  * - kein Save-Data (Datensparmodus bekommt nur das Poster)
- * - Viewport mindestens 768 px (Mobil lädt nie Videodaten)
  * - der Container ist in Viewport-Nähe (IntersectionObserver, 300 px
  *   Vorlauf; fehlt der Observer, wird schlicht nicht geladen — das
  *   Standbild ist der definierte Ausgang, nie ein Ladeloch)
+ *
+ * Mobil läuft das Video seit August 2026 auf Wunsch des Auftraggebers
+ * mit (Entscheidung „kann man später wieder rausnehmen"). Wer das
+ * zurückdrehen will, stellt die frühere Sperre wieder her:
+ *   const schmal = window.matchMedia("(max-width: 767px)").matches;
+ * und nimmt sie in die Bedingung unten auf. Save-Data und reduzierte
+ * Bewegung bleiben in jedem Fall Poster-only.
  *
  * Läuft das Video aus dem Bild, pausiert es. Es ist rein dekorativ:
  * aria-hidden, keine Controls, stumm, Endlosschleife.
@@ -47,10 +53,9 @@ export function PraxisVideo({
 
   useEffect(() => {
     const ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const schmal = window.matchMedia("(max-width: 767px)").matches;
     type MitVerbindung = Navigator & { connection?: { saveData?: boolean } };
     const sparsam = (navigator as MitVerbindung).connection?.saveData === true;
-    if (ruhig || schmal || sparsam) return;
+    if (ruhig || sparsam) return;
     setErlaubt(true);
   }, []);
 
