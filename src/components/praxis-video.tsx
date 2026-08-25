@@ -65,12 +65,22 @@ export function PraxisVideo({
     const video = videoRef.current;
     if (!wrap || !video || typeof IntersectionObserver === "undefined") return;
 
+    // Sichtbar schalten, sobald wirklich Frames laufen — nicht erst nach
+    // einem langen Fade: Beim ersten Schnitt lief das Video während der
+    // 700-ms-Überblendung schon los, und die Kamerafahrt „sprang" gegen
+    // das stehende Poster. Deshalb: vor dem Start auf Frame 0 zurück,
+    // kurzer Fade (in der Klasse unten), Umschalten im playing-Event.
+    const anzeigen = () => setSpielt(true);
+    video.addEventListener("playing", anzeigen);
+
     const io = new IntersectionObserver(
       (eintraege) => {
         for (const e of eintraege) {
           if (e.isIntersecting) {
-            // preload="none": Erst dieser Aufruf lädt Daten.
-            video.play().then(() => setSpielt(true)).catch(() => {
+            // preload="none": Erst dieser Aufruf lädt Daten. Frame 0
+            // deckt sich mit dem Poster, der Übergang ist damit unsichtbar.
+            if (video.paused && video.currentTime > 0) video.currentTime = 0;
+            video.play().catch(() => {
               // Autoplay verweigert (Browser-Richtlinie): Standbild bleibt.
             });
           } else {
@@ -81,7 +91,10 @@ export function PraxisVideo({
       { rootMargin: "300px 0px" },
     );
     io.observe(wrap);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      video.removeEventListener("playing", anzeigen);
+    };
   }, [erlaubt]);
 
   return (
@@ -107,7 +120,7 @@ export function PraxisVideo({
           preload="none"
           aria-hidden="true"
           tabIndex={-1}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-200 ${
             spielt ? "opacity-100" : "opacity-0"
           }`}
         >
