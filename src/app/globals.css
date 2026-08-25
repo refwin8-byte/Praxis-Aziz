@@ -297,26 +297,23 @@
     }
   }
 
-  /* Bildauftakt im Hero. Zwei Bewegungen, die dasselbe sagen: Das Bild
-     schiebt sich von unten frei und beruhigt sich dabei aus einer leichten
-     Überzeichnung heraus. 1200 ms, weil es unter dem Text liegt und nicht
-     um Aufmerksamkeit konkurrieren soll.
+  /* Bildauftakt im Hero: ein reiner Fade.
 
-     clip-path statt Höhenanimation: läuft im Compositor, kein Layout. */
+     Früher lagen hier Skalierung (1.05 → 1) und eine Bildmaske. Seit im
+     Hero ein Video läuft, las sich das Beruhigen der Skalierung als
+     „das Video wird größer und verschiebt sich" — gemessen war es kein
+     Layout-Shift (CLS 0), aber die Wahrnehmung zählt. Ein Fade sagt
+     dasselbe, ohne dass sich Kanten bewegen. */
   .bild-auftakt {
-    animation: bild-auftakt 1200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: bild-auftakt 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: 260ms;
   }
 
   @keyframes bild-auftakt {
     from {
-      clip-path: inset(14% 0 0 0);
-      transform: scale(1.05);
       opacity: 0;
     }
     to {
-      clip-path: inset(0 0 0 0);
-      transform: none;
       opacity: 1;
     }
   }
