@@ -86,14 +86,25 @@ export default function Datenschutz() {
               <strong className="font-semibold text-ink">
                 erst nach Ihrer ausdrücklichen Zustimmung
               </strong>{" "}
-              von OpenStreetMap geladen.
+              von Google Maps geladen, einem Dienst der Google Ireland
+              Limited, Gordon House, Barrow Street, Dublin 4, Irland.
             </p>
             <p>
               Stimmen Sie zu, übermittelt Ihr Browser die technisch
-              notwendigen Verbindungsdaten an die OpenStreetMap Foundation,
-              insbesondere Ihre IP-Adresse. Rechtsgrundlage ist Ihre
-              Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit
-              § 25 Abs. 1 TDDDG.
+              notwendigen Verbindungsdaten an Google, insbesondere Ihre
+              IP-Adresse; eine Übertragung in die USA ist dabei möglich.
+              Rechtsgrundlage ist Ihre Einwilligung nach Art. 6 Abs. 1
+              lit. a DSGVO in Verbindung mit § 25 Abs. 1 TDDDG. Näheres in
+              der Datenschutzerklärung von Google:{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-petrol underline underline-offset-2"
+              >
+                policies.google.com/privacy
+              </a>
+              .
             </p>
             <p>
               Ihre Entscheidung wird auf Wunsch lokal in Ihrem Browser

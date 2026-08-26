@@ -83,9 +83,12 @@ eingebettetes Google Maps überträgt die IP jeder Besucherin ungefragt an
 einen US-Anbieter. Das statische Bild umgeht das Problem, statt es zu
 verwalten — es sieht aus wie eine Karte, weil es eine ist.
 
-Wer zoomen und verschieben möchte, kann darunter die **interaktive Karte
-laden**; erst dann wird OpenStreetMap kontaktiert. „Route planen" funktioniert
-immer, weil der Link extern öffnet statt einzubetten.
+Wer zoomen und verschieben möchte, kann darunter die **interaktive
+Google-Maps-Karte laden**; erst dann wird Google kontaktiert (Wunsch des
+Auftraggebers, August 2026 — vorher OpenStreetMap-Embed). Die
+Datenschutzerklärung und der Consent-Banner nennen Google ausdrücklich,
+inklusive möglichem US-Transfer. „Route planen" öffnet Google Maps extern
+und funktioniert deshalb ohne Einwilligung.
 
 Attribution nach ODbL steht unter der Karte. Sie ist auch bei selbst
 gehosteten Kacheln Pflicht.

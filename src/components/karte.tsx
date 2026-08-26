@@ -16,9 +16,14 @@ import { Pfeil } from "@/components/icons";
  * OpenStreetMap geladen und liegen als ein einzelnes Bild in `public/bilder`.
  * Für die häufigste Frage — wo ist die Praxis? — reicht das vollständig.
  *
- * **Stufe 2, nach Einwilligung:** die interaktive Karte zum Zoomen und
- * Verschieben. Erst hier wird eine Verbindung zu OpenStreetMap aufgebaut,
- * und erst hier fließt die IP-Adresse der Besucherin dorthin.
+ * **Stufe 2, nach Einwilligung:** die interaktive Google-Maps-Karte zum
+ * Zoomen und Verschieben (Wunsch des Auftraggebers, August 2026 — die
+ * OSM-Einbettung wirkte fremd und funktionsarm; die alte Praxis-Website
+ * nutzte ebenfalls Google Maps hinter einer Zustimmung). Erst hier wird
+ * eine Verbindung zu Google aufgebaut, und erst hier fließt die
+ * IP-Adresse der Besucherin dorthin — inklusive US-Transfer, deshalb
+ * bleibt die Einwilligung zwingend und die Datenschutzerklärung nennt
+ * Google ausdrücklich.
  *
  * Warum nicht einfach die interaktive Karte sofort laden: Das Einbetten
  * fremder Inhalte überträgt personenbezogene Daten ohne Rechtsgrundlage. Für
@@ -37,8 +42,11 @@ const BBOX = [LON - 0.005, LAT - 0.0025, LON + 0.005, LAT + 0.0025]
   .map((n) => n.toFixed(6))
   .join(",");
 
-const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&layer=mapnik&marker=${LAT},${LON}`;
-const ROUTE = `https://www.openstreetmap.org/directions?to=${LAT}%2C${LON}`;
+// Offizielles schlüsselloses Google-Maps-Embed; lädt erst nach Einwilligung.
+const EMBED = `https://www.google.com/maps?q=${LAT},${LON}&z=16&hl=de&output=embed`;
+// Route öffnet extern in Google Maps — dafür braucht es keine Einwilligung,
+// weil nichts eingebettet wird; der Klick ist die bewusste Handlung.
+const ROUTE = `https://www.google.com/maps/dir/?api=1&destination=${LAT}%2C${LON}`;
 
 export function Karte({
   ueberschrift = "Anfahrt",
@@ -80,7 +88,7 @@ export function Karte({
         {extern ? (
           <iframe
             src={EMBED}
-            title={`Interaktive Karte mit dem Standort der Praxis, ${praxis.adresse.strasse}, ${praxis.adresse.plz} ${praxis.adresse.ort}`}
+            title={`Google-Maps-Karte mit dem Standort der Praxis, ${praxis.adresse.strasse}, ${praxis.adresse.plz} ${praxis.adresse.ort}`}
             loading="lazy"
             referrerPolicy="no-referrer"
             className="block h-[24rem] w-full border-0 sm:h-[30rem]"
@@ -100,16 +108,22 @@ export function Karte({
 
       <div className="mt-4 flex flex-col gap-x-8 gap-y-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[0.8125rem] text-ink-soft">
-          Kartendaten:{" "}
-          <a
-            href="https://www.openstreetmap.org/copyright"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline underline-offset-2"
-          >
-            OpenStreetMap-Mitwirkende
-          </a>
-          {!extern && ", als Bild von unserem eigenen Server geladen"}
+          {extern ? (
+            <>Interaktive Karte: Google Maps</>
+          ) : (
+            <>
+              Kartendaten:{" "}
+              <a
+                href="https://www.openstreetmap.org/copyright"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2"
+              >
+                OpenStreetMap-Mitwirkende
+              </a>
+              , als Bild von unserem eigenen Server geladen
+            </>
+          )}
         </p>
 
         {bereit && !extern && (
@@ -118,7 +132,7 @@ export function Karte({
             onClick={() => setzen(true)}
             className="inline-flex min-h-12 shrink-0 items-center text-[0.9375rem] font-medium text-petrol underline underline-offset-4"
           >
-            Interaktive Karte laden
+            Google-Maps-Karte laden
           </button>
         )}
 

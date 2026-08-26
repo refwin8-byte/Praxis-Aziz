@@ -66,8 +66,8 @@ export function ConsentBanner() {
             <p id="consent-text" className="mt-2.5 text-[0.9375rem] text-ink-soft">
               Diese Website nutzt keine Cookies für Werbung oder Statistik. Die
               Karte sehen Sie ohnehin, sie liegt als Bild auf unserem Server.
-              Nur die <em>interaktive</em> Karte zum Zoomen kommt von
-              OpenStreetMap und wird erst nach Ihrer Zustimmung geladen.{" "}
+              Nur die <em>interaktive</em> Karte zum Zoomen kommt von Google
+              Maps und wird erst nach Ihrer Zustimmung geladen.{" "}
               <Link
                 href="/datenschutz"
                 className="font-medium text-petrol underline underline-offset-2"
@@ -152,9 +152,9 @@ export function ConsentBanner() {
                 </div>
                 <p className="text-[0.9375rem] text-ink-soft">
                   Die interaktive Karte zum Zoomen und Verschieben wird von
-                  OpenStreetMap geladen. Dabei wird Ihre IP-Adresse an die
-                  OpenStreetMap Foundation übertragen. Ohne Zustimmung sehen
-                  Sie stattdessen eine statische Karte von unserem eigenen
+                  Google Maps geladen. Dabei wird Ihre IP-Adresse an Google
+                  übertragen, auch in die USA. Ohne Zustimmung sehen Sie
+                  stattdessen eine statische Karte von unserem eigenen
                   Server — mit derselben Adresse und derselben Marke.
                 </p>
               </li>
