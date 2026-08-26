@@ -169,11 +169,10 @@ export const urlaube: { von: string; bis: string; grund?: string }[] = [
  * an Google übertragen und bräuchte eine Einwilligung. Der reine Link kostet
  * nichts und führt zu denselben Bewertungen.
  *
- * TODO vor Livegang: Wert und Anzahl direkt am Google-Unternehmensprofil
- * ablesen und hier eintragen; der aktuelle Stand stammt aus einem
- * Branchenverzeichnis (cylex.de, August 2026) und ist aus zweiter Hand.
- * Danach regelmäßig aktualisieren — eine veraltete Zahl ist angreifbar.
- * Steht `null` hier, verschwindet der Block von der Seite.
+ * Verifiziert am 20.08.2026 direkt an Googles eigener Karten-Infokarte
+ * des Praxiseintrags: 4,2 aus 65 Rezensionen. Regelmäßig aktualisieren —
+ * eine veraltete Zahl ist angreifbar. Steht `null` hier, verschwindet
+ * der Block von der Seite.
  */
 export const googleBewertung: {
   wert: number;

@@ -42,11 +42,19 @@ const BBOX = [LON - 0.005, LAT - 0.0025, LON + 0.005, LAT + 0.0025]
   .map((n) => n.toFixed(6))
   .join(",");
 
+// Ziel als Name + Adresse, NICHT als Koordinate: Google schnappt nackte
+// Koordinaten auf den nächstgelegenen Karteneintrag — das war hier die
+// Zahnarztpraxis in der Ostlandstraße 19 nebenan. Mit Name und Hausnummer
+// landen Karte und Route eindeutig bei Dr. Aziz.
+const ZIEL = encodeURIComponent(
+  `${praxis.name}, ${praxis.adresse.strasse}, ${praxis.adresse.plz} ${praxis.adresse.ort}`,
+);
+
 // Offizielles schlüsselloses Google-Maps-Embed; lädt erst nach Einwilligung.
-const EMBED = `https://www.google.com/maps?q=${LAT},${LON}&z=16&hl=de&output=embed`;
+const EMBED = `https://www.google.com/maps?q=${ZIEL}&z=16&hl=de&output=embed`;
 // Route öffnet extern in Google Maps — dafür braucht es keine Einwilligung,
 // weil nichts eingebettet wird; der Klick ist die bewusste Handlung.
-const ROUTE = `https://www.google.com/maps/dir/?api=1&destination=${LAT}%2C${LON}`;
+const ROUTE = `https://www.google.com/maps/dir/?api=1&destination=${ZIEL}`;
 
 export function Karte({
   ueberschrift = "Anfahrt",
