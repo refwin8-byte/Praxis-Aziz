@@ -5,6 +5,8 @@ import { gruppierteZeiten } from "@/lib/oeffnungszeiten";
 import { Oeffnungsstatus } from "@/components/oeffnungsstatus";
 import { Karte } from "@/components/karte";
 import { Reveal } from "@/components/reveal";
+import { WhatsAppKontakt } from "@/components/whatsapp-kontakt";
+import { whatsappNummer } from "@/lib/whatsapp";
 import { Telefon, Pin } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -151,6 +153,8 @@ export default function Kontakt() {
           </div>
         </div>
       </div>
+
+      <WhatsAppKontakt nummer={whatsappNummer()} />
 
       <div className="border-t border-rule bg-paper/60">
         <div className="container-page section">

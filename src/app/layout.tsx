@@ -5,6 +5,8 @@ import { Footer } from "@/components/footer";
 import { ConsentBanner } from "@/components/consent-banner";
 import { NotfallLeiste } from "@/components/notfall-leiste";
 import { MobileAktionsleiste } from "@/components/mobile-aktionsleiste";
+import { SprachProvider } from "@/lib/i18n";
+import { SprachBanner } from "@/components/sprach-banner";
 import { praxis } from "@/data/praxis";
 import { schemaZeiten } from "@/lib/oeffnungszeiten";
 import { terminBuchung } from "@/lib/termin";
@@ -125,16 +127,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Zum Inhalt springen
         </a>
-        <NotfallLeiste />
-        <Navbar terminAktiv={terminBuchung() !== null} />
-        {/* tabIndex -1: Ohne das verschiebt der Skip-Link nur den Scroll, der
-            Tastaturfokus bliebe im Header und der nächste Tab liefe zurück
-            in die Navigation. */}
-        <main id="inhalt" tabIndex={-1} className="focus:outline-none">
-          {children}
-        </main>
-        <Footer />
-        <MobileAktionsleiste />
+        <SprachProvider>
+          <NotfallLeiste />
+          <Navbar terminAktiv={terminBuchung() !== null} />
+          <SprachBanner />
+          {/* tabIndex -1: Ohne das verschiebt der Skip-Link nur den Scroll,
+              der Tastaturfokus bliebe im Header und der nächste Tab liefe
+              zurück in die Navigation. */}
+          <main id="inhalt" tabIndex={-1} className="focus:outline-none">
+            {children}
+          </main>
+          <Footer />
+          <MobileAktionsleiste terminAktiv={terminBuchung() !== null} />
+        </SprachProvider>
         <ConsentBanner />
         <StrukturierteDaten />
       </body>

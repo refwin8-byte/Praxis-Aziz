@@ -5,13 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { praxis } from "@/data/praxis";
 import { Telefon, Menue, Schliessen } from "@/components/icons";
-
-const links = [
-  { href: "/leistungen", label: "Leistungen" },
-  { href: "/praxis", label: "Praxis & Team" },
-  { href: "/patientenservice", label: "Patientenservice" },
-  { href: "/kontakt", label: "Kontakt & Anfahrt" },
-];
+import { SPRACHEN, useSprache } from "@/lib/i18n";
+import { SprachWahl } from "@/components/sprach-wahl";
 
 /**
  * `terminAktiv` kommt aus dem Layout (Server): Nur wenn ein
@@ -22,6 +17,14 @@ const links = [
 export function Navbar({ terminAktiv }: { terminAktiv: boolean }) {
   const [offen, setOffen] = useState(false);
   const pfad = usePathname();
+  const { wb, sprache, setzeSprache } = useSprache();
+
+  const links = [
+    { href: "/leistungen", label: wb.nav.leistungen },
+    { href: "/praxis", label: wb.nav.praxisTeam },
+    { href: "/patientenservice", label: wb.nav.patientenservice },
+    { href: "/kontakt", label: wb.nav.kontaktAnfahrt },
+  ];
 
   // Menü schließen, wenn die Route wechselt. Ohne das bleibt das Overlay
   // auf der Zielseite stehen.
@@ -105,6 +108,7 @@ export function Navbar({ terminAktiv }: { terminAktiv: boolean }) {
               </Link>
             );
           })}
+          <SprachWahl />
           {terminAktiv ? (
             <>
               <a
@@ -118,7 +122,7 @@ export function Navbar({ terminAktiv }: { terminAktiv: boolean }) {
                 href="/patientenservice/termin"
                 className="press inline-flex min-h-12 items-center rounded-md bg-night px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-night-deep"
               >
-                Termin buchen
+                {wb.nav.terminBuchen}
               </Link>
             </>
           ) : (
@@ -146,7 +150,7 @@ export function Navbar({ terminAktiv }: { terminAktiv: boolean }) {
             className="press inline-flex h-12 w-12 items-center justify-center rounded-md border border-rule text-night"
             aria-expanded={offen}
             aria-controls="hauptmenue"
-            aria-label={offen ? "Menü schließen" : "Menü öffnen"}
+            aria-label={offen ? wb.nav.menueSchliessen : wb.nav.menueOeffnen}
           >
             {offen ? <Schliessen size={22} /> : <Menue size={22} />}
           </button>
@@ -175,10 +179,35 @@ export function Navbar({ terminAktiv }: { terminAktiv: boolean }) {
                   onClick={nachObenWennSchonDa}
                   className="block py-4 text-[1.0625rem] font-semibold text-petrol"
                 >
-                  Termin buchen
+                  {wb.nav.terminBuchen}
                 </Link>
               </li>
             )}
+            {/* Sprachauswahl im mobilen Menü: vier große, klar
+                beschriftete Tasten in der jeweiligen Eigenschreibweise.
+                Keine Flaggen — Sprachen sind keine Länder. */}
+            <li className="py-4">
+              <p className="text-[0.8125rem] font-semibold uppercase tracking-wide text-ink-soft">
+                {wb.allgemein.sprache}
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {SPRACHEN.map((s) => (
+                  <button
+                    key={s.code}
+                    type="button"
+                    onClick={() => setzeSprache(s.code)}
+                    aria-pressed={s.code === sprache}
+                    className={`press inline-flex min-h-13 items-center justify-center rounded-md border text-[1.0625rem] font-medium transition-colors ${
+                      s.code === sprache
+                        ? "border-night bg-night text-white"
+                        : "border-rule bg-paper text-ink"
+                    }`}
+                  >
+                    {s.eigenname}
+                  </button>
+                ))}
+              </div>
+            </li>
           </ul>
         </nav>
       )}
