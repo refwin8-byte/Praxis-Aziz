@@ -95,7 +95,23 @@ export function StartseiteInhalt({ anbieter }: { anbieter: string | null }) {
 
           <div className="enter faden mt-8" style={{ "--d": "220ms" } as React.CSSProperties} aria-hidden="true" />
           <div className="enter mt-5" style={{ "--d": "240ms" } as React.CSSProperties}>
-            <Oeffnungsstatus className="text-[1.0625rem]" />
+            {/* Der Status ist ein Anker zu den Sprechzeiten weiter unten:
+                Wer wissen will, wann offen ist, will meist die ganze Woche
+                sehen. Der Pfeil zeigt die Klickbarkeit an, der Fokusring
+                kommt global. scroll-behavior respektiert reduced motion. */}
+            <a
+              href="#finden"
+              className="press group inline-flex flex-wrap items-center gap-x-2.5"
+              aria-label={wb.start.findenTitel}
+            >
+              <Oeffnungsstatus className="text-[1.0625rem]" />
+              <span
+                aria-hidden="true"
+                className="text-[0.9375rem] font-semibold text-petrol underline-offset-4 group-hover:underline"
+              >
+                {wb.sprechzeiten.titel} ↓
+              </span>
+            </a>
             <p className="mt-2 text-[0.9375rem] text-ink-soft">
               {anbieter ? wb.start.statusHinweisOnline : wb.start.statusHinweis}
             </p>
