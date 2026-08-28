@@ -45,7 +45,7 @@ export async function rezeptAnfordern(
 
   const fehler = pruefeRezept(fd);
   if (Object.keys(fehler).length > 0) {
-    return { status: "fehler", fehler, meldung: "Bitte prüfen Sie die markierten Angaben." };
+    return { status: "fehler", fehler, meldung: "pruefen" };
   }
 
   const name = feld(fd, "name");
@@ -76,8 +76,8 @@ export async function rezeptAnfordern(
       fehler: {},
       meldung:
         ergebnis.grund === "nicht-konfiguriert"
-          ? "Der Versand ist derzeit nicht eingerichtet. Bitte rufen Sie uns an, damit Ihr Rezept nicht liegen bleibt."
-          : "Die Anfrage konnte nicht übermittelt werden. Bitte rufen Sie uns an, damit Ihr Rezept nicht liegen bleibt.",
+          ? "versand-nicht-eingerichtet"
+          : "versand-fehlgeschlagen",
     };
   }
 
@@ -92,7 +92,7 @@ export async function ueberweisungAnfordern(
 
   const fehler = pruefeUeberweisung(fd);
   if (Object.keys(fehler).length > 0) {
-    return { status: "fehler", fehler, meldung: "Bitte prüfen Sie die markierten Angaben." };
+    return { status: "fehler", fehler, meldung: "pruefen" };
   }
 
   const name = feld(fd, "name");
@@ -119,8 +119,8 @@ export async function ueberweisungAnfordern(
       fehler: {},
       meldung:
         ergebnis.grund === "nicht-konfiguriert"
-          ? "Der Versand ist derzeit nicht eingerichtet. Bitte rufen Sie uns an, damit Ihre Überweisung nicht liegen bleibt."
-          : "Die Anfrage konnte nicht übermittelt werden. Bitte rufen Sie uns an, damit Ihre Überweisung nicht liegen bleibt.",
+          ? "versand-nicht-eingerichtet"
+          : "versand-fehlgeschlagen",
     };
   }
 

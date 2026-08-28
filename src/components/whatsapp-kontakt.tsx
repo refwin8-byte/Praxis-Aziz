@@ -88,7 +88,7 @@ export function WhatsAppKontakt({ nummer }: { nummer: string | null }) {
           <div className="relative overflow-hidden rounded-lg bg-rule/40">
             <Image
               src="/bilder/whatsapp-vorschau.webp"
-              alt="Smartphone mit angedeuteten Chat-Sprechblasen auf einem hellen Empfangstresen, dahinter eine Pflanze vor grüner Wand"
+              alt={w.bildAlt}
               width={1800}
               height={1004}
               sizes="(min-width: 1024px) 46vw, 100vw"

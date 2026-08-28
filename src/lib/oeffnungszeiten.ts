@@ -87,7 +87,18 @@ export type Status =
       offen: false;
       /** Warum heute zu ist, wenn es nicht schlicht außerhalb der Zeiten liegt. */
       heute?: "feiertag" | "urlaub";
-      naechster: { tag: string; von: string } | null;
+      /**
+       * Sprachneutral: `abstandTage` 0 = heute, 1 = morgen; `tagIndex` ist
+       * der Wochentag (0 = Montag) und `datum` steht nur, wenn der Termin
+       * mehr als eine Woche entfernt ist. Die Beschriftung baut der
+       * Browser in der gewählten Sprache.
+       */
+      naechster: {
+        abstandTage: number;
+        tagIndex: number;
+        datum: { tag: number; monat: number } | null;
+        von: string;
+      } | null;
     };
 
 /** Hat die Praxis an diesem Tag nach Plan geöffnet? */
@@ -123,20 +134,17 @@ export function status(jetzt: Date = new Date()): Status {
     if (tagGeschlossen(datum)) continue;
     for (const z of sprechzeiten[(tag + d) % 7]) {
       if (d === 0 && min >= alsMinuten(z.von)) continue;
-      // Ab einer Woche Abstand reicht der Wochentag nicht mehr — „Montag"
-      // hieße sonst irgendein Montag. Dann steht das Datum dabei.
-      const name =
-        d === 0
-          ? "heute"
-          : d === 1
-            ? "morgen"
-            : d < 7
-              ? tagLang[(tag + d) % 7]
-              : `${tagLang[(tag + d) % 7]}, ${datum.getDate()}.${datum.getMonth() + 1}.`;
       return {
         offen: false,
         heute: heuteZu ?? undefined,
-        naechster: { tag: name, von: z.von },
+        naechster: {
+          abstandTage: d,
+          tagIndex: (tag + d) % 7,
+          // Ab einer Woche Abstand reicht der Wochentag nicht mehr —
+          // „Montag" hieße sonst irgendein Montag. Dann steht das Datum dabei.
+          datum: d >= 7 ? { tag: datum.getDate(), monat: datum.getMonth() + 1 } : null,
+          von: z.von,
+        },
       };
     }
   }

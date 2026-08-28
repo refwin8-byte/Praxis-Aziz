@@ -1,6 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { praxis } from "@/data/praxis";
-import { terminBuchung } from "@/lib/termin";
+import { useSprache } from "@/lib/i18n";
 import { Rezept, Telefon, Pfeil, Kalender, Menschen } from "@/components/icons";
 
 /**
@@ -16,36 +18,35 @@ import { Rezept, Telefon, Pfeil, Kalender, Menschen } from "@/components/icons";
  * soll vorher lesen, was er bereithalten muss und wie lange es dauert.
  */
 
-export function AnfrageAktionen() {
-  const buchung = terminBuchung();
+export function AnfrageAktionen({ anbieter }: { anbieter: string | null }) {
+  const { wb } = useSprache();
+  const buchung = anbieter;
 
   const wege = [
     {
       Icon: Kalender,
-      titel: buchung ? "Termin buchen" : "Termin vereinbaren",
-      text: buchung
-        ? `Online über ${buchung.anbieter} oder telefonisch. Halten Sie Ihre Versichertenkarte bereit.`
-        : "Telefonisch, damit wir die Dringlichkeit direkt einschätzen können. Halten Sie Ihre Versichertenkarte bereit.",
+      titel: buchung ? wb.nav.terminBuchen : wb.termin.titel,
+      text: wb.service.terminText,
       href: "/patientenservice/termin",
-      aktion: buchung ? "Termin buchen" : "Zum Terminweg",
+      aktion: buchung ? wb.nav.terminBuchen : wb.service.terminAktion,
       kante: "bg-night",
       farbe: "text-night",
     },
     {
       Icon: Rezept,
-      titel: "Folgerezept anfordern",
-      text: "Für Medikamente, die Sie regelmäßig einnehmen. Halten Sie Name, Wirkstärke und Packungsgröße bereit.",
+      titel: wb.rezept.titel,
+      text: wb.service.rezeptText,
       href: "/patientenservice/rezept",
-      aktion: "Zum Formular",
+      aktion: wb.service.rezeptAktion,
       kante: "bg-sage",
       farbe: "text-petrol",
     },
     {
       Icon: Menschen,
-      titel: "Überweisung anfordern",
-      text: "Für den Besuch bei einer Fachärztin oder einem Facharzt. Fachrichtung und Grund genügen.",
+      titel: wb.ueberweisung.titel,
+      text: wb.service.ueberweisungText,
       href: "/patientenservice/ueberweisung",
-      aktion: "Zum Formular",
+      aktion: wb.service.ueberweisungAktion,
       kante: "bg-petrol",
       farbe: "text-petrol",
     },
@@ -84,11 +85,10 @@ export function AnfrageAktionen() {
       <div className="mt-8 flex flex-col gap-4 border-t border-white/15 pt-7 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-xl">
           <span className="block text-[1.125rem] font-semibold">
-            Befund, Rückfrage oder etwas anderes?
+            {wb.start.telefonTitel}
           </span>
           <span className="mt-1 block text-[0.9375rem] text-white/75">
-            Alles Weitere klären wir am Telefon. Während der Sprechzeiten ist
-            die Anmeldung besetzt.
+            {wb.start.telefonText}
           </span>
         </p>
         <a

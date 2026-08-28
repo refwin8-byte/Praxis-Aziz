@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { status, type Status } from "@/lib/oeffnungszeiten";
+import { useSprache } from "@/lib/i18n";
 
 /**
  * Live berechneter Öffnungsstatus.
@@ -16,6 +17,7 @@ import { status, type Status } from "@/lib/oeffnungszeiten";
  * Daneben steht immer die Telefonnummer, und der Text macht keine Zusage.
  */
 export function Oeffnungsstatus({ className = "" }: { className?: string }) {
+  const { wb } = useSprache();
   const [s, setS] = useState<Status | null>(null);
 
   useEffect(() => {
@@ -30,10 +32,18 @@ export function Oeffnungsstatus({ className = "" }: { className?: string }) {
     return (
       <p className={`flex min-h-7 items-center gap-2.5 ${className}`} aria-hidden="true">
         <span className="h-2.5 w-2.5 rounded-full bg-rule" />
-        <span className="text-ink-soft">Sprechzeiten werden geprüft</span>
+        <span className="text-ink-soft">{wb.status.wirdGeprueft}</span>
       </p>
     );
   }
+
+  // Beschriftung des nächsten Öffnungstermins in der gewählten Sprache.
+  const naechsterText = (n: NonNullable<Extract<Status, { offen: false }>["naechster"]>) => {
+    if (n.abstandTage === 0) return wb.status.heute;
+    if (n.abstandTage === 1) return wb.status.morgen;
+    const tag = wb.wochentageKurz[n.tagIndex];
+    return n.datum ? `${tag}, ${n.datum.tag}.${n.datum.monat}.` : tag;
+  };
 
   return (
     <p className={`flex min-h-7 items-center gap-2.5 ${className}`} role="status">
@@ -42,23 +52,27 @@ export function Oeffnungsstatus({ className = "" }: { className?: string }) {
       />
       {s.offen ? (
         <span>
-          <strong className="font-semibold text-open">Jetzt geöffnet</strong>
+          <strong className="font-semibold text-open">{wb.status.gebffnetBis}</strong>
           <span className="text-ink-soft">
             {" "}
-            bis <span className="num">{s.bis}</span> Uhr
+            {wb.sprechzeiten.bisUhr === "–" ? "–" : wb.sprechzeiten.bisUhr}{" "}
+            <span className="num">{s.bis}</span>
+            {wb.status.uhr && ` ${wb.status.uhr}`}
           </span>
         </span>
       ) : (
         <span className="text-ink-soft">
-          {s.heute === "feiertag" && "Heute Feiertag. "}
-          {s.heute === "urlaub" && "Die Praxis ist derzeit geschlossen. "}
+          {s.heute === "feiertag" && `${wb.status.feiertagHeute} `}
+          {s.heute === "urlaub" && `${wb.status.urlaubHeute} `}
           {s.naechster ? (
             <>
-              {s.heute ? "Wieder" : "Geschlossen, wieder"} {s.naechster.tag} ab{" "}
-              <span className="num">{s.naechster.von}</span> Uhr
+              {s.heute ? wb.status.wieder : wb.status.geschlossenWieder}{" "}
+              {naechsterText(s.naechster)} {wb.status.ab}{" "}
+              <span className="num">{s.naechster.von}</span>
+              {wb.status.uhr && ` ${wb.status.uhr}`}
             </>
           ) : (
-            "Zurzeit geschlossen"
+            wb.status.zurzeitGeschlossen
           )}
         </span>
       )}

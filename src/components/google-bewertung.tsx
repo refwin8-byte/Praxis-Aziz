@@ -1,4 +1,7 @@
+"use client";
+
 import { googleBewertung } from "@/data/praxis";
+import { useSprache } from "@/lib/i18n";
 
 /**
  * Das Google-„G" in den Originalfarben — unverändert, wie es die
@@ -33,6 +36,7 @@ function GoogleG({ size = 30 }: { size?: number }) {
  * Echtzeit aus und wäre irgendwann falsch.
  */
 export function GoogleBewertung() {
+  const { wb } = useSprache();
   if (!googleBewertung) return null;
   const b = googleBewertung;
 
@@ -42,10 +46,10 @@ export function GoogleBewertung() {
         <GoogleG size={32} />
         <p>
           <span className="num block text-[1.75rem] font-semibold leading-tight text-night">
-            {b.wert.toLocaleString("de-DE", { minimumFractionDigits: 1 })} von 5
+            {b.wert.toLocaleString("de-DE", { minimumFractionDigits: 1 })} {wb.google.vonFuenf}
           </span>
           <span className="text-[0.9375rem] text-ink-soft">
-            aus <span className="num">{b.anzahl}</span> Google-Rezensionen, Stand {b.stand}
+            {wb.google.ausRezensionen.replace("{n}", String(b.anzahl))} · {wb.google.stand} {b.stand}
           </span>
         </p>
       </div>
@@ -55,8 +59,8 @@ export function GoogleBewertung() {
         target="_blank"
         className="press inline-flex min-h-13 shrink-0 items-center justify-center gap-2.5 rounded-md border border-night/25 px-6 font-semibold text-night transition-colors hover:border-night hover:bg-night/5"
       >
-        Bewertungen auf Google lesen
-        <span className="sr-only">(öffnet Google in einem neuen Tab)</span>
+        {wb.google.lesen}
+        <span className="sr-only">{wb.google.neuerTab}</span>
       </a>
     </div>
   );

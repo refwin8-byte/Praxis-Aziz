@@ -6,13 +6,27 @@ import { rezeptAnfordern, ueberweisungAnfordern } from "@/app/actions/anfrage";
 import { maxMedikamente, type FormularZustand } from "@/lib/anfrage-schema";
 import { Feld, eingabeKlasse, beschriebenVon } from "@/components/feld";
 import { praxis } from "@/data/praxis";
+import { useSprache } from "@/lib/i18n";
+import type { FehlerCode, Woerterbuch } from "@/lib/i18n/woerterbuch";
 import { Telefon } from "@/components/icons";
 
+/**
+ * Die beiden Anfrageformulare, vollständig übersetzbar.
+ *
+ * Der Server prüft sprachneutral und gibt FEHLERCODES zurück; erst hier
+ * werden sie in der gewählten Sprache angezeigt (wb.fehler). Ein
+ * unbekannter Code fällt auf die deutsche Formulierung des Codes zurück,
+ * statt ein leeres Feld zu zeigen.
+ */
 const leer: FormularZustand = { status: "leer" };
 
-/** Für Menschen unsichtbar, für Bots verlockend. Die id wird pro Formular
- *  vergeben, weil beide Formulare auf derselben Seite stehen und doppelte
- *  ids die Label-Verknüpfung zerstören würden. */
+function nutzeFehlertext(wb: Woerterbuch) {
+  return (code?: string) =>
+    code ? (wb.fehler[code as FehlerCode] ?? code) : undefined;
+}
+
+/** Für Menschen unsichtbar, für Bots verlockend. Bleibt bewusst deutsch —
+ *  das Feld ist aria-hidden und existiert nur für Maschinen. */
 function Honigtopf({ praefix }: { praefix: string }) {
   const id = `${praefix}-webseite`;
   return (
@@ -24,6 +38,7 @@ function Honigtopf({ praefix }: { praefix: string }) {
 }
 
 function Einwilligung({ praefix, fehler }: { praefix: string; fehler?: string }) {
+  const { wb } = useSprache();
   const id = `${praefix}-einwilligung`;
   return (
     <div className="flex flex-col gap-2 rounded-sm bg-linen p-5">
@@ -39,14 +54,12 @@ function Einwilligung({ praefix, fehler }: { praefix: string; fehler?: string })
           aria-invalid={fehler ? true : undefined}
         />
         <label htmlFor={id} className="text-[0.9375rem] leading-relaxed text-ink">
-          Ich bin damit einverstanden, dass die Praxis meine Angaben zur
-          Bearbeitung dieser Anfrage verarbeitet. Mir ist bekannt, dass ich
-          diese Einwilligung jederzeit widerrufen kann. Näheres in der{" "}
+          {wb.rezept.einwilligung} {wb.rezept.naeheres}{" "}
           <Link
             href="/datenschutz"
             className="font-medium text-petrol underline underline-offset-2"
           >
-            Datenschutzerklärung
+            {wb.rezept.datenschutzerklaerung}
           </Link>
           .
         </label>
@@ -61,30 +74,26 @@ function Einwilligung({ praefix, fehler }: { praefix: string; fehler?: string })
 }
 
 function Absenden({ laeuft, text }: { laeuft: boolean; text: string }) {
+  const { wb } = useSprache();
   return (
     <button
       type="submit"
       disabled={laeuft}
       className="press inline-flex min-h-14 items-center justify-center rounded-md bg-night px-8 text-[1.0625rem] font-semibold text-white transition-colors hover:bg-night-deep disabled:cursor-not-allowed disabled:opacity-70"
     >
-      {laeuft ? "Wird gesendet …" : text}
+      {laeuft ? wb.rezept.wirdGesendet : text}
     </button>
   );
 }
 
-/** Bestätigung. Sie bestätigt den EINGANG, nie das Ergebnis: Ob ein Rezept
- *  oder eine Überweisung ausgestellt wird, entscheidet die Ärztin oder der
- *  Arzt bei der Prüfung — das sagt der Text ausdrücklich. Dazu die
- *  Bearbeitungszeit, damit niemand nach zwei Stunden verunsichert anruft. */
+/** Bestätigung. Sie bestätigt den EINGANG, nie das Ergebnis. */
 function Gesendet({ titel, hinweis }: { titel: string; hinweis: string }) {
+  const { wb } = useSprache();
   return (
     <div className="rounded-md border-2 border-open bg-paper p-8" role="status">
       <h3 className="text-[1.375rem] text-night">{titel}</h3>
       <p className="mt-3 font-medium text-night">{hinweis}</p>
-      <p className="mt-3 text-ink-soft">
-        Wir melden uns, sobald die Anfrage bearbeitet ist. Bitte planen Sie
-        zwei Werktage ein. Ist es dringend, rufen Sie uns bitte an.
-      </p>
+      <p className="mt-3 text-ink-soft">{wb.rezept.bestaetigungFolge}</p>
       <a
         href={praxis.telefonHref}
         className="press num mt-6 inline-flex min-h-13 items-center gap-3 rounded-md bg-night px-6 font-semibold text-white"
@@ -97,22 +106,26 @@ function Gesendet({ titel, hinweis }: { titel: string; hinweis: string }) {
 }
 
 function Fehlermeldung({ zustand }: { zustand: FormularZustand }) {
+  const { wb } = useSprache();
+  const t = nutzeFehlertext(wb);
   if (zustand.status !== "fehler" || !zustand.meldung) return null;
   return (
     <p
       className="rounded-sm border-2 border-alert bg-alert/8 px-4 py-3 font-medium text-alert"
       role="alert"
     >
-      {zustand.meldung}
+      {t(zustand.meldung)}
     </p>
   );
 }
 
 /** Gemeinsame Felder beider Formulare. */
 function Person({ p, f }: { p: string; f: Record<string, string> }) {
+  const { wb } = useSprache();
+  const t = nutzeFehlertext(wb);
   return (
     <>
-      <Feld id={`${p}-name`} label="Vor- und Nachname" pflicht fehler={f.name}>
+      <Feld id={`${p}-name`} label={wb.rezept.name} pflicht fehler={t(f.name)}>
         <input
           id={`${p}-name`}
           name="name"
@@ -121,16 +134,16 @@ function Person({ p, f }: { p: string; f: Record<string, string> }) {
           required
           className={eingabeKlasse}
           aria-invalid={f.name ? true : undefined}
-          aria-describedby={beschriebenVon(`${p}-name`, false, f.name)}
+          aria-describedby={beschriebenVon(`${p}-name`, false, t(f.name))}
         />
       </Feld>
 
       <Feld
         id={`${p}-geburtsdatum`}
-        label="Geburtsdatum"
-        hinweis="Zum Beispiel 03.04.1951"
+        label={wb.rezept.geburtsdatum}
+        hinweis={wb.rezept.geburtsdatumHinweis}
         pflicht
-        fehler={f.geburtsdatum}
+        fehler={t(f.geburtsdatum)}
       >
         <input
           id={`${p}-geburtsdatum`}
@@ -141,7 +154,7 @@ function Person({ p, f }: { p: string; f: Record<string, string> }) {
           required
           className={eingabeKlasse}
           aria-invalid={f.geburtsdatum ? true : undefined}
-          aria-describedby={beschriebenVon(`${p}-geburtsdatum`, true, f.geburtsdatum)}
+          aria-describedby={beschriebenVon(`${p}-geburtsdatum`, true, t(f.geburtsdatum))}
         />
       </Feld>
     </>
@@ -149,12 +162,15 @@ function Person({ p, f }: { p: string; f: Record<string, string> }) {
 }
 
 function Rueckruf({ p, f }: { p: string; f: Record<string, string> }) {
+  const { wb } = useSprache();
+  const t = nutzeFehlertext(wb);
   return (
     <Feld
       id={`${p}-telefon`}
-      label="Telefonnummer für Rückfragen"
-      hinweis="Beschleunigt die Bearbeitung, falls etwas unklar ist."
-      fehler={f.telefon}
+      label={wb.rezept.telefon}
+      hinweis={wb.rezept.telefonHinweis}
+      freiwilligText={wb.allgemein.freiwillig}
+      fehler={t(f.telefon)}
     >
       <input
         id={`${p}-telefon`}
@@ -163,32 +179,33 @@ function Rueckruf({ p, f }: { p: string; f: Record<string, string> }) {
         autoComplete="tel"
         className={eingabeKlasse}
         aria-invalid={f.telefon ? true : undefined}
-        aria-describedby={beschriebenVon(`${p}-telefon`, true, f.telefon)}
+        aria-describedby={beschriebenVon(`${p}-telefon`, true, t(f.telefon))}
       />
     </Feld>
   );
 }
 
-/**
- * Eine Medikamenten-Zeile: Name, Wirkstärke/Dosierung, Packungsgröße.
- * Getrennte Felder statt Freitext, damit die Praxis vollständige Angaben
- * bekommt und die Fehlermeldung sagen kann, was genau fehlt.
- */
+/** Eine Medikamenten-Zeile: Name, Wirkstärke/Dosierung, Packungsgröße. */
 function MedikamentZeile({ nr, f }: { nr: number; f: Record<string, string> }) {
+  const { wb } = useSprache();
+  const t = nutzeFehlertext(wb);
   const p = `medikament-${nr}`;
   return (
     <fieldset className="flex flex-col gap-5 rounded-sm border border-ink-soft/40 bg-paper/60 p-5">
       <legend className="px-1 font-semibold text-night">
-        {nr === 1 ? "Medikament" : `Medikament ${nr}`}
-        {nr > 1 && <span className="font-normal text-ink-soft"> (freiwillig)</span>}
+        {nr === 1 ? wb.rezept.medikament : wb.rezept.medikamentN.replace("{n}", String(nr))}
+        {nr > 1 && (
+          <span className="font-normal text-ink-soft"> {wb.allgemein.freiwillig}</span>
+        )}
       </legend>
 
       <Feld
         id={`${p}-name`}
-        label="Name des Medikaments"
-        hinweis="So, wie er auf der Packung steht."
+        label={wb.rezept.medikamentName}
+        hinweis={wb.rezept.medikamentNameHinweis}
         pflicht={nr === 1}
-        fehler={f[`${p}-name`]}
+        freiwilligText={wb.allgemein.freiwillig}
+        fehler={t(f[`${p}-name`])}
       >
         <input
           id={`${p}-name`}
@@ -197,16 +214,17 @@ function MedikamentZeile({ nr, f }: { nr: number; f: Record<string, string> }) {
           required={nr === 1}
           className={eingabeKlasse}
           aria-invalid={f[`${p}-name`] ? true : undefined}
-          aria-describedby={beschriebenVon(`${p}-name`, true, f[`${p}-name`])}
+          aria-describedby={beschriebenVon(`${p}-name`, true, t(f[`${p}-name`]))}
         />
       </Feld>
 
       <Feld
         id={`${p}-staerke`}
-        label="Wirkstärke oder Dosierung"
-        hinweis="Zum Beispiel 50 mg oder 1-0-1."
+        label={wb.rezept.wirkstaerke}
+        hinweis={wb.rezept.wirkstaerkeHinweis}
         pflicht={nr === 1}
-        fehler={f[`${p}-staerke`]}
+        freiwilligText={wb.allgemein.freiwillig}
+        fehler={t(f[`${p}-staerke`])}
       >
         <input
           id={`${p}-staerke`}
@@ -215,15 +233,16 @@ function MedikamentZeile({ nr, f }: { nr: number; f: Record<string, string> }) {
           required={nr === 1}
           className={eingabeKlasse}
           aria-invalid={f[`${p}-staerke`] ? true : undefined}
-          aria-describedby={beschriebenVon(`${p}-staerke`, true, f[`${p}-staerke`])}
+          aria-describedby={beschriebenVon(`${p}-staerke`, true, t(f[`${p}-staerke`]))}
         />
       </Feld>
 
       <Feld
         id={`${p}-packung`}
-        label="Packungsgröße"
-        hinweis="Steht auf der Packung, zum Beispiel N2 oder 100 Stück."
-        fehler={f[`${p}-packung`]}
+        label={wb.rezept.packungsgroesse}
+        hinweis={wb.rezept.packungsgroesseHinweis}
+        freiwilligText={wb.allgemein.freiwillig}
+        fehler={t(f[`${p}-packung`])}
       >
         <input
           id={`${p}-packung`}
@@ -231,7 +250,7 @@ function MedikamentZeile({ nr, f }: { nr: number; f: Record<string, string> }) {
           type="text"
           className={eingabeKlasse}
           aria-invalid={f[`${p}-packung`] ? true : undefined}
-          aria-describedby={beschriebenVon(`${p}-packung`, true, f[`${p}-packung`])}
+          aria-describedby={beschriebenVon(`${p}-packung`, true, t(f[`${p}-packung`]))}
         />
       </Feld>
     </fieldset>
@@ -239,12 +258,13 @@ function MedikamentZeile({ nr, f }: { nr: number; f: Record<string, string> }) {
 }
 
 export function RezeptFormular() {
+  const { wb } = useSprache();
+  const t = nutzeFehlertext(wb);
   const [zustand, aktion, laeuft] = useActionState(rezeptAnfordern, leer);
   const f = zustand.status === "fehler" ? zustand.fehler : {};
 
   // Weitere Zeilen erscheinen erst auf Wunsch. Hat eine ausgeblendete Zeile
-  // einen Prüffehler (theoretisch nur nach manipuliertem Absenden), wird sie
-  // trotzdem gezeigt — eine unsichtbare Fehlermeldung wäre eine Sackgasse.
+  // einen Prüffehler, wird sie trotzdem gezeigt.
   const [zeilen, setZeilen] = useState(1);
   const sichtbar = Math.max(
     zeilen,
@@ -255,10 +275,7 @@ export function RezeptFormular() {
 
   if (zustand.status === "gesendet")
     return (
-      <Gesendet
-        titel="Ihre Rezeptanforderung ist eingegangen"
-        hinweis="Ihre Anfrage wird von der Praxis geprüft. Dies ist noch keine Bestätigung der Verordnung."
-      />
+      <Gesendet titel={wb.rezept.bestaetigungTitel} hinweis={wb.rezept.bestaetigungHinweis} />
     );
 
   return (
@@ -278,16 +295,13 @@ export function RezeptFormular() {
           onClick={() => setZeilen(sichtbar + 1)}
           className="press inline-flex min-h-13 items-center justify-center self-start rounded-md border border-night/25 px-6 font-semibold text-night transition-colors hover:border-night hover:bg-night/5"
         >
-          Weiteres Medikament hinzufügen
+          {wb.rezept.weiteresMedikament}
         </button>
       )}
-      <p className="-mt-3 text-[0.9375rem] text-ink-soft">
-        Bis zu drei Medikamente je Anfrage. Brauchen Sie mehr, rufen Sie uns
-        bitte an — das geht schneller.
-      </p>
+      <p className="-mt-3 text-[0.9375rem] text-ink-soft">{wb.rezept.maxHinweis}</p>
 
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-1 font-medium text-ink">Wie möchten Sie das Rezept erhalten?</legend>
+        <legend className="mb-1 font-medium text-ink">{wb.rezept.erhaltLegende}</legend>
         <label className="flex min-h-13 items-center gap-3 rounded-sm border border-ink-soft/55 bg-paper px-4">
           <input
             type="radio"
@@ -296,7 +310,7 @@ export function RezeptFormular() {
             defaultChecked
             className="h-5 w-5 accent-night"
           />
-          <span>Abholung in der Praxis</span>
+          <span>{wb.rezept.erhaltAbholung}</span>
         </label>
         <label className="flex min-h-13 items-start gap-3 rounded-sm border border-ink-soft/55 bg-paper px-4 py-3">
           <input
@@ -306,29 +320,30 @@ export function RezeptFormular() {
             className="mt-1 h-5 w-5 shrink-0 accent-night"
           />
           <span>
-            E-Rezept
+            {wb.rezept.erhaltERezept}
             <span className="block text-[0.9375rem] text-ink-soft">
-              Wenn es medizinisch und organisatorisch möglich ist. Ihre
-              Versichertenkarte muss im laufenden Quartal eingelesen sein.
+              {wb.rezept.erhaltERezeptHinweis}
             </span>
           </span>
         </label>
       </fieldset>
 
       <Rueckruf p="rz" f={f} />
-      <Einwilligung praefix="rz" fehler={f.einwilligung} />
-      <Absenden laeuft={laeuft} text="Rezept anfordern" />
+      <Einwilligung praefix="rz" fehler={t(f.einwilligung)} />
+      <Absenden laeuft={laeuft} text={wb.rezept.absenden} />
     </form>
   );
 }
 
 export function UeberweisungFormular() {
+  const { wb } = useSprache();
+  const t = nutzeFehlertext(wb);
   const [zustand, aktion, laeuft] = useActionState(ueberweisungAnfordern, leer);
   if (zustand.status === "gesendet")
     return (
       <Gesendet
-        titel="Ihre Überweisungsanforderung ist eingegangen"
-        hinweis="Die Praxis prüft Ihre Anfrage. Medizinisch notwendige Rückfragen können telefonisch erfolgen."
+        titel={wb.ueberweisung.bestaetigungTitel}
+        hinweis={wb.ueberweisung.bestaetigungHinweis}
       />
     );
 
@@ -343,10 +358,10 @@ export function UeberweisungFormular() {
 
       <Feld
         id="ue-fachrichtung"
-        label="Fachrichtung"
-        hinweis="Zum Beispiel Orthopädie, Augenheilkunde oder Kardiologie."
+        label={wb.ueberweisung.fachrichtung}
+        hinweis={wb.ueberweisung.fachrichtungHinweis}
         pflicht
-        fehler={f.fachrichtung}
+        fehler={t(f.fachrichtung)}
       >
         <input
           id="ue-fachrichtung"
@@ -355,16 +370,16 @@ export function UeberweisungFormular() {
           required
           className={eingabeKlasse}
           aria-invalid={f.fachrichtung ? true : undefined}
-          aria-describedby={beschriebenVon("ue-fachrichtung", true, f.fachrichtung)}
+          aria-describedby={beschriebenVon("ue-fachrichtung", true, t(f.fachrichtung))}
         />
       </Feld>
 
       <Feld
         id="ue-grund"
-        label="Grund für die Überweisung"
-        hinweis="Beschreiben Sie kurz Ihre Beschwerden oder nennen Sie die geplante Untersuchung."
+        label={wb.ueberweisung.grund}
+        hinweis={wb.ueberweisung.grundHinweis}
         pflicht
-        fehler={f.grund}
+        fehler={t(f.grund)}
       >
         <textarea
           id="ue-grund"
@@ -373,15 +388,16 @@ export function UeberweisungFormular() {
           required
           className={eingabeKlasse}
           aria-invalid={f.grund ? true : undefined}
-          aria-describedby={beschriebenVon("ue-grund", true, f.grund)}
+          aria-describedby={beschriebenVon("ue-grund", true, t(f.grund))}
         />
       </Feld>
 
       <Feld
         id="ue-facharztpraxis"
-        label="Behandelnde Facharztpraxis"
-        hinweis="Falls Sie schon wissen, wohin Sie möchten — Name oder Ort der Praxis genügt."
-        fehler={f.facharztpraxis}
+        label={wb.ueberweisung.facharztpraxis}
+        hinweis={wb.ueberweisung.facharztpraxisHinweis}
+        freiwilligText={wb.allgemein.freiwillig}
+        fehler={t(f.facharztpraxis)}
       >
         <input
           id="ue-facharztpraxis"
@@ -389,13 +405,13 @@ export function UeberweisungFormular() {
           type="text"
           className={eingabeKlasse}
           aria-invalid={f.facharztpraxis ? true : undefined}
-          aria-describedby={beschriebenVon("ue-facharztpraxis", true, f.facharztpraxis)}
+          aria-describedby={beschriebenVon("ue-facharztpraxis", true, t(f.facharztpraxis))}
         />
       </Feld>
 
       <Rueckruf p="ue" f={f} />
-      <Einwilligung praefix="ue" fehler={f.einwilligung} />
-      <Absenden laeuft={laeuft} text="Überweisung anfordern" />
+      <Einwilligung praefix="ue" fehler={t(f.einwilligung)} />
+      <Absenden laeuft={laeuft} text={wb.ueberweisung.absenden} />
     </form>
   );
 }

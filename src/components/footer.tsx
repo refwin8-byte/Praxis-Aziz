@@ -1,19 +1,36 @@
+"use client";
+
 import Link from "next/link";
 import { praxis, notfall } from "@/data/praxis";
 import { gruppierteZeiten } from "@/lib/oeffnungszeiten";
+import { useSprache } from "@/lib/i18n";
 
+/**
+ * Footer, übersetzbar. Die Rechtsseiten (Impressum, Datenschutz,
+ * Barrierefreiheit) behalten bewusst ihre deutschen Titel — die Seiten
+ * dahinter sind deutsch, und ein übersetzter Linktext würde etwas
+ * versprechen, das die Zielseite nicht hält.
+ */
 export function Footer() {
+  const { wb } = useSprache();
   const zeiten = gruppierteZeiten();
+
+  // Gruppierte Tage („Mo, Di") in die gewählte Sprache übertragen: Die
+  // Gruppen kommen mit deutschen Kürzeln aus der Logik; hier werden sie
+  // über den Index zurückübersetzt.
+  const de = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+  const uebertrage = (tage: string) =>
+    tage
+      .split(", ")
+      .map((t) => wb.wochentageKurz[de.indexOf(t)] ?? t)
+      .join(", ");
 
   return (
     <footer className="bg-night-deep text-white">
-      {/* Notfallband. Steht über allem anderen und in der Zustandsfarbe:
-          Wer hier landet, hat keine Zeit zu suchen. Die Nummern sind
-          Telefonlinks, damit ein Tippen am Handy genügt. */}
       <div className="bg-alert">
         <div className="container-page flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-medium">
-            In medizinischen Notfällen wählen Sie 112.
+            {wb.leiste.notfall}: 112 · {wb.leiste.bereitschaft}: 116 117
           </p>
           <div className="flex flex-wrap gap-3">
             <a
@@ -38,7 +55,7 @@ export function Footer() {
             <span className="mark h-10 w-10 text-sage" />
             <p className="font-serif text-[1.375rem]">{praxis.nameKurz}</p>
           </div>
-          <p className="mt-2 text-[0.9375rem] text-sage">{praxis.fachgebiet}</p>
+          <p className="mt-2 text-[0.9375rem] text-sage">{wb.start.eyebrow}</p>
           <address className="mt-6 not-italic leading-relaxed text-white/85">
             {praxis.adresse.strasse}
             <br />
@@ -53,39 +70,41 @@ export function Footer() {
         </div>
 
         <div>
-          <h2 className="label text-sage">Sprechzeiten</h2>
+          <h2 className="label text-sage">{wb.sprechzeiten.titel}</h2>
           <dl className="mt-5 space-y-3">
             {zeiten.map((g) => (
               <div key={g.tage} className="flex gap-5">
-                <dt className="w-20 shrink-0 font-semibold">{g.tage}</dt>
+                <dt className="w-20 shrink-0 font-semibold">{uebertrage(g.tage)}</dt>
                 <dd className="num text-white/85">
                   {g.zeiten.map((z) => (
                     <span key={z.von} className="block">
-                      {z.von} bis {z.bis} Uhr
+                      {z.von} – {z.bis}
                     </span>
                   ))}
                 </dd>
               </div>
             ))}
             <div className="flex gap-5">
-              <dt className="w-20 shrink-0 font-semibold">Sa, So</dt>
-              <dd className="text-white/85">geschlossen</dd>
+              <dt className="w-20 shrink-0 font-semibold">
+                {wb.wochentageKurz[5]}, {wb.wochentageKurz[6]}
+              </dt>
+              <dd className="text-white/85">{wb.sprechzeiten.geschlossen}</dd>
             </div>
           </dl>
         </div>
 
-        <nav aria-label="Rechtliches und weitere Seiten">
-          <h2 className="label text-sage">Seiten</h2>
+        <nav aria-label={wb.nav.patientenservice}>
+          <h2 className="label text-sage">{wb.nav.patientenservice}</h2>
           <ul className="mt-5 space-y-1 text-white/85">
             {[
-              { href: "/leistungen", label: "Leistungen" },
-              { href: "/praxis", label: "Praxis & Team" },
-              { href: "/patientenservice", label: "Patientenservice" },
-              { href: "/patientenservice/termin", label: "Termin" },
-              { href: "/patientenservice/rezept", label: "Folgerezept" },
-              { href: "/patientenservice/ueberweisung", label: "Überweisung" },
-              { href: "/patientenservice/notfall", label: "Notfallinformationen" },
-              { href: "/kontakt", label: "Kontakt & Anfahrt" },
+              { href: "/leistungen", label: wb.nav.leistungen },
+              { href: "/praxis", label: wb.nav.praxisTeam },
+              { href: "/patientenservice", label: wb.nav.patientenservice },
+              { href: "/patientenservice/termin", label: wb.leiste.termin },
+              { href: "/patientenservice/rezept", label: wb.service.rezeptTitel },
+              { href: "/patientenservice/ueberweisung", label: wb.service.ueberweisungTitel },
+              { href: "/patientenservice/notfall", label: wb.service.notfallTitel },
+              { href: "/kontakt", label: wb.nav.kontaktAnfahrt },
             ].map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="inline-flex min-h-12 items-center">
@@ -94,27 +113,18 @@ export function Footer() {
               </li>
             ))}
             <li className="pt-4">
-              <Link
-                href="/impressum"
-                className="inline-flex min-h-12 items-center underline-offset-4 hover:underline"
-              >
-                Impressum
+              <Link href="/impressum" className="inline-flex min-h-12 items-center">
+                <span className="ulink">Impressum</span>
               </Link>
             </li>
             <li>
-              <Link
-                href="/datenschutz"
-                className="inline-flex min-h-12 items-center underline-offset-4 hover:underline"
-              >
-                Datenschutz
+              <Link href="/datenschutz" className="inline-flex min-h-12 items-center">
+                <span className="ulink">Datenschutz</span>
               </Link>
             </li>
             <li>
-              <Link
-                href="/barrierefreiheit"
-                className="inline-flex min-h-12 items-center underline-offset-4 hover:underline"
-              >
-                Barrierefreiheit
+              <Link href="/barrierefreiheit" className="inline-flex min-h-12 items-center">
+                <span className="ulink">Barrierefreiheit</span>
               </Link>
             </li>
           </ul>
@@ -124,9 +134,7 @@ export function Footer() {
       <div className="border-t border-white/12">
         <div className="container-page py-6">
           <p className="text-[0.875rem] text-white/65">
-            {praxis.name}, {praxis.adresse.ort}. Diese Website setzt keine
-            Cookies zu Werbe- oder Analysezwecken. Die Karte auf der
-            Kontaktseite wird erst geladen, wenn Sie zustimmen.
+            {praxis.name}, {praxis.adresse.ort}.
           </p>
         </div>
       </div>

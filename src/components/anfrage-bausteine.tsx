@@ -1,4 +1,7 @@
+"use client";
+
 import { notfall, praxis } from "@/data/praxis";
+import { useSprache } from "@/lib/i18n";
 import { Telefon } from "@/components/icons";
 
 /**
@@ -12,11 +15,12 @@ import { Telefon } from "@/components/icons";
  */
 
 export function BevorSieAusfuellen({ punkte }: { punkte: { titel: string; text: string }[] }) {
+  const { wb } = useSprache();
   return (
     <section className="bg-night text-white" aria-labelledby="ablauf">
       <div className="container-page py-14 lg:py-16">
         <h2 id="ablauf" className="label text-sage-bright">
-          Bevor Sie ausfüllen
+          {wb.anfrage.bevorSieAusfuellen}
         </h2>
         <div className="mt-8 grid gap-x-12 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
           {punkte.map((p) => (
@@ -33,25 +37,14 @@ export function BevorSieAusfuellen({ punkte }: { punkte: { titel: string; text: 
 
 /** Was mit den Angaben geschieht, plus Telefonweg. */
 export function DatenHinweis() {
+  const { wb } = useSprache();
   return (
     <div>
-      <h2 className="h2 text-night">Was mit Ihren Angaben geschieht</h2>
+      <h2 className="h2 text-night">{wb.anfrage.datenTitel}</h2>
       <div className="mt-7 flex max-w-[65ch] flex-col gap-5 text-[1.0625rem]">
-        <p>
-          Ihre Angaben werden über eine verschlüsselte Verbindung direkt an
-          das Postfach der Praxis übermittelt. Auf dieser Website werden sie
-          nicht gespeichert: Es gibt keine Datenbank und keine Kopie.
-        </p>
-        <p>
-          Rechtsgrundlage ist Ihre ausdrückliche Einwilligung nach Art. 9
-          Abs. 2 lit. a DSGVO. Sie können sie jederzeit widerrufen, indem Sie
-          uns anrufen.
-        </p>
-        <p className="text-ink-soft">
-          Bitte schicken Sie uns Gesundheitsangaben nicht aus Ihrem eigenen
-          E-Mail-Programm. Dieser Weg ist unverschlüsselt. Das Formular hier
-          ist es nicht.
-        </p>
+        <p>{wb.anfrage.datenText1}</p>
+        <p>{wb.anfrage.datenText2}</p>
+        <p className="text-ink-soft">{wb.anfrage.datenText3}</p>
       </div>
 
       <a
@@ -68,15 +61,13 @@ export function DatenHinweis() {
 /** Notfallhinweis als eigener, farblich abgesetzter Block: Er ist der
  *  wichtigste Inhalt jeder Formularseite. */
 export function NotfallAside() {
+  const { wb } = useSprache();
   return (
     <aside className="h-fit rounded-md border-2 border-alert p-7" aria-labelledby="notfall">
       <h2 id="notfall" className="text-[1.3125rem] font-semibold text-alert">
-        Im Notfall nicht warten
+        {wb.anfrage.notfallAsideTitel}
       </h2>
-      <p className="mt-4 text-ink-soft">
-        Eine Anfrage über dieses Formular wird zu den Sprechzeiten bearbeitet,
-        nicht sofort. Wenn es dringend ist, nutzen Sie bitte diese Wege.
-      </p>
+      <p className="mt-4 text-ink-soft">{wb.anfrage.notfallAsideText}</p>
 
       <ul className="mt-7 flex flex-col gap-6">
         {[notfall.lebensbedrohlich, notfall.bereitschaft].map((n) => (
@@ -87,15 +78,18 @@ export function NotfallAside() {
             >
               {n.nummer}
             </a>
-            <p className="mt-1 font-medium text-night">{n.label}</p>
-            <p className="text-[0.9375rem] text-ink-soft">{n.hinweis}</p>
+            <p className="mt-1 font-medium text-night">
+              {n.nummer === "112" ? wb.notfall.lebensbedrohlich : wb.notfall.bereitschaft}
+            </p>
+            <p className="text-[0.9375rem] text-ink-soft">
+              {n.nummer === "112" ? wb.notfall.lebensbedrohlichHinweis : wb.notfall.bereitschaftHinweis}
+            </p>
           </li>
         ))}
       </ul>
 
       <p className="mt-7 border-t border-rule pt-5 text-[0.875rem] text-ink-soft">
-        Diese Website gibt keine medizinische Beratung. Die Hinweise ersetzen
-        kein ärztliches Gespräch.
+        {wb.anfrage.keineBeratung}
       </p>
     </aside>
   );

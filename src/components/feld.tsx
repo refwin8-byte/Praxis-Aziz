@@ -29,6 +29,7 @@ export function Feld({
   hinweis,
   pflicht,
   fehler,
+  freiwilligText = "(freiwillig)",
   children,
 }: {
   id: string;
@@ -36,13 +37,15 @@ export function Feld({
   hinweis?: string;
   pflicht?: boolean;
   fehler?: string;
+  /** Übersetzter Zusatz für freiwillige Felder; Standard ist Deutsch. */
+  freiwilligText?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={id} className="font-medium text-ink">
         {label}
-        {!pflicht && <span className="font-normal text-ink-soft"> (freiwillig)</span>}
+        {!pflicht && <span className="font-normal text-ink-soft"> {freiwilligText}</span>}
       </label>
 
       {hinweis && (

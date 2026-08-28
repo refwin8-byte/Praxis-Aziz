@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { praxisZahlen } from "@/data/praxis";
+import { useSprache } from "@/lib/i18n";
 import { Menschen, Kalender, Schwerpunkte } from "@/components/icons";
 
 /**
@@ -122,6 +123,12 @@ const icons = {
 } as const;
 
 export function Zahlen() {
+  const { wb } = useSprache();
+  const texte = {
+    patienten: { label: wb.zahlen.patientenLabel, zusatz: wb.zahlen.patientenZusatz },
+    jahre: { label: wb.zahlen.jahreLabel, zusatz: wb.zahlen.jahreZusatz },
+    schwerpunkte: { label: wb.zahlen.schwerpunkteLabel, zusatz: wb.zahlen.schwerpunkteZusatz },
+  } as const;
   return (
     <dl className="grid gap-x-12 gap-y-12 sm:grid-cols-3">
       {praxisZahlen.map((z) => {
@@ -130,10 +137,10 @@ export function Zahlen() {
           <div key={z.label} className="border-t border-night pt-6">
             <Icon size={26} className="text-petrol" />
             <dd className="mt-5 font-serif text-[clamp(2.75rem,5vw,3.75rem)] leading-none text-night">
-              <Zahl ziel={z.wert} praefix={z.praefix} />
+              <Zahl ziel={z.wert} praefix={z.praefix ? wb.zahlen.ueber : undefined} />
             </dd>
-            <dt className="mt-4 font-semibold text-night">{z.label}</dt>
-            <p className="mt-2 text-[0.9375rem] text-ink-soft">{z.zusatz}</p>
+            <dt className="mt-4 font-semibold text-night">{texte[z.id].label}</dt>
+            <p className="mt-2 text-[0.9375rem] text-ink-soft">{texte[z.id].zusatz}</p>
           </div>
         );
       })}

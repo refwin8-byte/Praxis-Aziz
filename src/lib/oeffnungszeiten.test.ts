@@ -22,25 +22,25 @@ describe("status", () => {
   it("Montag 12:00 → geschlossen, wieder heute ab 15:00 (Grenze exklusiv)", () => {
     const s = status(mo(12));
     expect(s.offen).toBe(false);
-    if (!s.offen) expect(s.naechster).toEqual({ tag: "heute", von: "15:00" });
+    if (!s.offen) expect(s.naechster).toMatchObject({ abstandTage: 0, von: "15:00" });
   });
 
   it("Montag 18:30 → wieder morgen ab 08:00", () => {
     const s = status(mo(18, 30));
     expect(s.offen).toBe(false);
-    if (!s.offen) expect(s.naechster).toEqual({ tag: "morgen", von: "08:00" });
+    if (!s.offen) expect(s.naechster).toMatchObject({ abstandTage: 1, von: "08:00" });
   });
 
   it("Mittwoch 14:00 → nachmittags zu, wieder morgen", () => {
     const s = status(new Date(2026, 7, 19, 14));
     expect(s.offen).toBe(false);
-    if (!s.offen) expect(s.naechster).toEqual({ tag: "morgen", von: "08:00" });
+    if (!s.offen) expect(s.naechster).toMatchObject({ abstandTage: 1, von: "08:00" });
   });
 
   it("Samstag → wieder Montag", () => {
     const s = status(new Date(2026, 7, 22, 10));
     expect(s.offen).toBe(false);
-    if (!s.offen) expect(s.naechster?.tag).toBe("Montag");
+    if (!s.offen) expect(s.naechster?.tagIndex).toBe(0);
   });
 
   it("Feiertag (1. Mai 2026, ein Freitag) → zu, mit Grund", () => {
@@ -66,7 +66,11 @@ describe("status", () => {
       expect(s.heute).toBe("urlaub");
       // Wieder offen am Montag, 3. August — mehr als eine Woche entfernt,
       // deshalb steht das Datum dabei.
-      expect(s.naechster).toEqual({ tag: "Montag, 3.8.", von: "08:00" });
+      expect(s.naechster).toMatchObject({
+        tagIndex: 0,
+        datum: { tag: 3, monat: 8 },
+        von: "08:00",
+      });
     }
   });
 
