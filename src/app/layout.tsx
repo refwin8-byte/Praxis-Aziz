@@ -5,6 +5,8 @@ import { Footer } from "@/components/footer";
 import { ConsentBanner } from "@/components/consent-banner";
 import { NotfallLeiste } from "@/components/notfall-leiste";
 import { MobileAktionsleiste } from "@/components/mobile-aktionsleiste";
+import { WhatsAppFab } from "@/components/whatsapp-fab";
+import { whatsappNummer } from "@/lib/whatsapp";
 import { SprachProvider } from "@/lib/i18n";
 import { SprachBanner } from "@/components/sprach-banner";
 import { praxis } from "@/data/praxis";
@@ -139,6 +141,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <Footer />
           <MobileAktionsleiste terminAktiv={terminBuchung() !== null} />
+          <WhatsAppFab nummer={whatsappNummer()} />
         </SprachProvider>
         <ConsentBanner />
         <StrukturierteDaten />

@@ -203,6 +203,7 @@ export function Navbar({ terminAktiv }: { terminAktiv: boolean }) {
                         : "border-rule bg-paper text-ink"
                     }`}
                   >
+                    <span aria-hidden="true" className="mr-2">{s.flagge}</span>
                     {s.eigenname}
                   </button>
                 ))}

@@ -8,6 +8,7 @@ import type { Woerterbuch } from "./woerterbuch";
 export const tr: Woerterbuch = {
   code: "tr",
   eigenname: "Türkçe",
+  flagge: "\u{1F1F9}\u{1F1F7}",
   geprueft: false,
 
   allgemein: {

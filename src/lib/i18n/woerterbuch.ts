@@ -44,6 +44,10 @@ export type FehlerCode =
 export type Woerterbuch = {
   code: Sprachcode;
   eigenname: string;
+  /** Emoji-Flagge für die Sprachauswahl — auf Wunsch des Auftraggebers
+   *  (der ursprüngliche Brief schloss Flaggen aus; Konflikt benannt am
+   *  20.08.2026). Steht immer NEBEN dem Sprachnamen, nie allein. */
+  flagge: string;
   geprueft: boolean;
 
   allgemein: {
@@ -362,6 +366,7 @@ export type Woerterbuch = {
 export const de: Woerterbuch = {
   code: "de",
   eigenname: "Deutsch",
+  flagge: "\u{1F1E9}\u{1F1EA}",
   geprueft: true,
 
   allgemein: {

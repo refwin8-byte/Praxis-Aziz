@@ -8,6 +8,7 @@ import type { Woerterbuch } from "./woerterbuch";
 export const ru: Woerterbuch = {
   code: "ru",
   eigenname: "Русский",
+  flagge: "\u{1F1F7}\u{1F1FA}",
   geprueft: false,
 
   allgemein: {

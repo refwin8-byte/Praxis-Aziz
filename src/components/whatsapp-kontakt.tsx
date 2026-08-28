@@ -37,7 +37,7 @@ export function WhatsAppKontakt({ nummer }: { nummer: string | null }) {
     <section className="border-t border-rule bg-paper" aria-labelledby="whatsapp-titel">
       <div className="container-page grid gap-10 py-16 lg:grid-cols-[6fr_6fr] lg:items-center lg:gap-16 lg:py-24">
         <div>
-          <h2 id="whatsapp-titel" className="h2 text-night">
+          <h2 id="whatsapp-titel" className="h2 scroll-mt-28 text-night">
             {w.ueberschrift}
           </h2>
           <p className="mt-5 max-w-[58ch] text-[1.0625rem]">{w.text}</p>

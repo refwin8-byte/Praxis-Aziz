@@ -8,6 +8,7 @@ import type { Woerterbuch } from "./woerterbuch";
 export const sq: Woerterbuch = {
   code: "sq",
   eigenname: "Shqip",
+  flagge: "\u{1F1E6}\u{1F1F1}",
   geprueft: false,
 
   allgemein: {

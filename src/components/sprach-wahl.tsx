@@ -66,6 +66,7 @@ export function SprachWahl({ dunkel = false }: { dunkel?: boolean }) {
         }`}
       >
         <Globus />
+        <span aria-hidden="true">{wb.flagge}</span>
         <span className="uppercase">{sprache}</span>
       </button>
 
@@ -89,7 +90,10 @@ export function SprachWahl({ dunkel = false }: { dunkel?: boolean }) {
                   s.code === sprache ? "font-semibold text-night" : "text-ink"
                 }`}
               >
-                {s.eigenname}
+                <span>
+                  <span aria-hidden="true" className="mr-2.5">{s.flagge}</span>
+                  {s.eigenname}
+                </span>
                 {s.code === sprache && (
                   <span aria-hidden="true" className="text-petrol">
                     ✓
